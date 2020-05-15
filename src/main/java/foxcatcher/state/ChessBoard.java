@@ -39,40 +39,6 @@ public class ChessBoard {
 
     }
 
-    public void movePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
-
-        Tile moveFromTile = getTile(moveFromCoordinate);
-        Tile moveToTile = getTile(moveToCoordinate);
-
-        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromTile);
-
-        if(possibleMoveCoordinates.contains(moveToCoordinate)) {
-
-            moveToTile.setPawn(moveFromTile.getPawn());
-            moveFromTile.setPawn(Pawn.EMPTY);
-
-
-        }
-
-
-    }
-    public Vector<Coordinate> calculatePossibleMoveCoordinates(Tile moveFromTile){
-
-        Vector<Coordinate> possibleMoveCoordinates=new Vector<Coordinate>();
-
-        Direction[] possibleMoveDirections= moveFromTile.getPawn().getMoveDirections();
-
-        for(Direction direction : possibleMoveDirections ){
-
-            Coordinate moveCoordinate=moveFromTile.getCoordinate().moveToDirection(direction);
-            if(isValidCoordinate(moveCoordinate) && getTile(moveCoordinate).isEmpty()) possibleMoveCoordinates.add(moveCoordinate);
-
-        }
-
-        return possibleMoveCoordinates;
-
-    }
-
 
     public Tile[][] getTiles() {
          return tiles;

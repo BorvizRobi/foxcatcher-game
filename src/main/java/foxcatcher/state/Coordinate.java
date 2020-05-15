@@ -11,7 +11,7 @@ public class Coordinate {
     private int y;
 
     public  Coordinate moveToDirection(Direction direction){
-        return new Coordinate(this.x+ direction.getDx(),this.y + direction.getDy());
+        return new Coordinate(this.x + direction.getDx(),this.y + direction.getDy());
     }
 
 }
