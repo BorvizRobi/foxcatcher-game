@@ -23,9 +23,9 @@ public class FoxcatcherState {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Vector<Square> row : chessBoard.getSquares()) {
-            for (Square square : row) {
-                sb.append(square).append(' ');
+        for (Tile[] row : chessBoard.getTiles()) {
+            for (Tile tile : row) {
+                sb.append(tile.getPawn()).append(' ');
             }
             sb.append('\n');
         }

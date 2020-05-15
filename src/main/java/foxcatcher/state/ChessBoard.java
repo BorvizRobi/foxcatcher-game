@@ -7,33 +7,28 @@ import java.util.Vector;
 
 public class ChessBoard {
 
-    private Vector<Vector<Square>> squares;
+    private final Tile[][] tiles;
 
     public ChessBoard(){
 
-         squares= new Vector<Vector<Square>>();
+         tiles= new Tile[8][8];
         for(int i = 0 ; i < 8; i++) {
-            Vector<Square> row = new Vector<Square>();
             for (int j = 0; j < 8; j++) {
-                Coordinate coordinate = new Coordinate(i , j);
-                Square square = new Square(coordinate,null);
-                row.add(square);
+
+                tiles[i][j]=new Tile(new Coordinate(i,j),Pawn.EMPTY);
+
             }
-            squares.add(row);
         }
     }
 
     public ChessBoard(int [][] a){
 
-         squares= new Vector<Vector<Square>>();
+        tiles= new Tile[8][8];
         for(int i = 0 ; i < 8; i++) {
-            Vector<Square> row = new Vector<Square>();
             for (int j = 0; j < 8; j++) {
-                Coordinate coordinate = new Coordinate(i , j);
-                Square square = new Square(coordinate, a[i][j]==2?new FoxPawn():(a[i][j]==1?new DogPawn():null));
-                row.add(square);
+
+                tiles[i][j]=new Tile(new Coordinate(i,j),Pawn.of(a[i][j]));
             }
-            squares.add(row);
         }
     }
 
@@ -46,57 +41,56 @@ public class ChessBoard {
 
     public void movePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
 
-        Square moveFromSquare = getSquare(moveFromCoordinate);
-        Square moveToSquare = getSquare(moveToCoordinate);
+        Tile moveFromTile = getTile(moveFromCoordinate);
+        Tile moveToTile = getTile(moveToCoordinate);
 
-        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromSquare);
+        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromTile);
 
         if(possibleMoveCoordinates.contains(moveToCoordinate)) {
 
-            moveToSquare.setPawn(moveFromSquare.getPawn());
-            moveFromSquare.setPawn(null);
+            moveToTile.setPawn(moveFromTile.getPawn());
+            moveFromTile.setPawn(Pawn.EMPTY);
 
 
         }
 
 
     }
-    public Vector<Coordinate> calculatePossibleMoveCoordinates(Square moveFromSquare){
+    public Vector<Coordinate> calculatePossibleMoveCoordinates(Tile moveFromTile){
 
         Vector<Coordinate> possibleMoveCoordinates=new Vector<Coordinate>();
-        Vector<Direction> possibleMoveDirections= moveFromSquare.getPawn().getPossibleMoveDirections();
+
+        Direction[] possibleMoveDirections= moveFromTile.getPawn().getMoveDirections();
 
         for(Direction direction : possibleMoveDirections ){
-            Coordinate moveCoordinate=moveFromSquare.getCoordinate().moveToDirection(direction);
-            if(isValidCoordinate(moveCoordinate) && getSquare(moveCoordinate).isEmpty()) possibleMoveCoordinates.add(moveCoordinate);
+
+            Coordinate moveCoordinate=moveFromTile.getCoordinate().moveToDirection(direction);
+            if(isValidCoordinate(moveCoordinate) && getTile(moveCoordinate).isEmpty()) possibleMoveCoordinates.add(moveCoordinate);
+
         }
 
-
-
         return possibleMoveCoordinates;
+
     }
 
-    public void setSquare(Coordinate coordinate, Pawn pawn) {
-        Square square = getSquare(coordinate);
-        square.setPawn(pawn);
+
+    public Tile[][] getTiles() {
+         return tiles;
     }
 
-    public Vector<Vector<Square>> getSquares() {
-        return squares;
+    public Tile getTile(Coordinate coordinate){
+
+        return tiles[coordinate.getX()][coordinate.getY()];
     }
 
-    public Square getSquare(Coordinate coordinate){
+    public Tile getTile(int x, int y){
 
-        return squares.get(coordinate.getX()).get(coordinate.getY());
+        return tiles[x][y];
     }
 
-    public Square getSquare(int x, int y){
+    public Tile[][] getSquare(){
 
-        return squares.get(x).get(y);
-    }
-    public Vector<Vector<Square>> getSquare(){
-
-        return squares;
+        return tiles;
     }
 
 }
