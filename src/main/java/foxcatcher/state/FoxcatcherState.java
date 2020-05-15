@@ -1,15 +1,13 @@
 package foxcatcher.state;
 
 import java.util.Vector;
-
+/**
+ * Class representing the state of the game.
+ */
 public class FoxcatcherState implements Cloneable{
 
     public ChessBoard chessBoard;
-    public Coordinate FoxPosition;
-    public Coordinate Dog1Position;
-    public Coordinate Dog2Position;
-    public Coordinate Dog3Position;
-    public Coordinate Dog4Position;
+
 
     public static final int[][] INITIAL = {
             {0, 0, 2, 0, 0, 0, 0, 0},
@@ -27,70 +25,21 @@ public class FoxcatcherState implements Cloneable{
     }
 
     public FoxcatcherState(int [][] a) {
-        if(!isValidBoard(a)){
-            throw new IllegalArgumentException();
-        }
         chessBoard = new ChessBoard(a);
     }
 
-    public boolean isValidBoard(int [][] a){
-
-        if (a == null || a.length != 8) {
-            return false;
-        }
-        boolean foundEmptyTiles = false;
-        boolean foundFox = false;
-        boolean foundDogs = false;
-
-        int EmptyTiles = 0;
-        int Dogs = 0;
-
-        for (int[] row : a) {
-            if (row == null || row.length != 8) {
-                return false;
-            }
-            for (int space : row) {
-                if (space < 0 || space >= Pawn.values().length) {
-                    return false;
-                }
-                if (space == Pawn.EMPTY.getValue()) {
-
-                    EmptyTiles++;
-                }
-                if (space == Pawn.DOG.getValue()) {
-
-                    Dogs++;
-                }
-                if (space == Pawn.FOX.getValue()) {
-
-                    foundFox = true;
-                }
-            }
-        }
-        if (EmptyTiles==59) foundEmptyTiles = true;
-        if (Dogs==4) foundDogs = true;
-
-        return foundEmptyTiles && foundDogs && foundFox;
-
-    }
-
     public void movePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
+
+        if(!canMovePawn(moveFromCoordinate,moveToCoordinate)) throw new IllegalArgumentException();
 
         Tile moveFromTile = chessBoard.getTile(moveFromCoordinate);
         Tile moveToTile = chessBoard.getTile(moveToCoordinate);
 
         Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromTile);
 
-        if(possibleMoveCoordinates == null)
-            throw new IllegalArgumentException();
-
-        if(possibleMoveCoordinates.contains(moveToCoordinate)) {
-
             moveToTile.setPawn(moveFromTile.getPawn());
             moveFromTile.setPawn(Pawn.EMPTY);
 
-        }
-        else throw new IllegalArgumentException();
 
 
     }
@@ -101,7 +50,7 @@ public class FoxcatcherState implements Cloneable{
 
         Direction[] possibleMoveDirections= moveFromTile.getPawn().getMoveDirections();
 
-
+        if(possibleMoveDirections!=null)
         for(Direction direction : possibleMoveDirections ){
 
             Coordinate moveCoordinate=moveFromTile.getCoordinate().moveToDirection(direction);
@@ -112,9 +61,26 @@ public class FoxcatcherState implements Cloneable{
         return possibleMoveCoordinates;
 
     }
+    public boolean canMovePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
+        return calculatePossibleMoveCoordinates(chessBoard.getTile(moveFromCoordinate)).contains(moveToCoordinate);
+    }
 
     public boolean isGameOwer(){
-        return calculatePossibleMoveCoordinates(chessBoard.getTile(FoxPosition)).isEmpty();
+        return calculatePossibleMoveCoordinates(chessBoard.getTile( chessBoard.getFoxPosition())).isEmpty();
+    }
+
+    public FoxcatcherState clone() {
+        FoxcatcherState copy = null;
+        try {
+            copy = (FoxcatcherState) super.clone();
+        } catch (CloneNotSupportedException e) {
+        }
+        copy.chessBoard = new ChessBoard();
+        for (int i = 0; i < chessBoard.getTiles().length; ++i) {
+            copy.chessBoard.getTiles()[i] = chessBoard.getTiles()[i].clone();
+        }
+
+        return copy;
     }
 
 
@@ -130,6 +96,7 @@ public class FoxcatcherState implements Cloneable{
     }
 
     public static void main(String[] args) {
+
         FoxcatcherState state = new FoxcatcherState();
         System.out.println(state);
 

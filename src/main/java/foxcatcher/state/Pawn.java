@@ -1,25 +1,25 @@
 package foxcatcher.state;
 
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * Class representing the empty pawn and the possible pawns of the game.
  */
-
 public enum Pawn {
 
     EMPTY(null),
-    DOG(new Direction[]{Direction.TOP_LEFT,Direction.TOP_RIGHT}),
+    DOG(new Direction[]{Direction.TOP_LEFT, Direction.TOP_RIGHT}),
     FOX(new Direction[]{Direction.TOP_LEFT,Direction.TOP_RIGHT,Direction.BOTTOM_LEFT,Direction.BOTTOM_RIGHT});
 
+    /**
+     * The array containing the pawns possible move directions.
+     */
+    @Getter
     private final Direction[] moveDirections;
 
-
-    private Pawn(Direction[] moveDirections) {
+    private Pawn(Direction[] moveDirections){
         this.moveDirections = moveDirections;
     }
-
-
 
     /**
      * Returns the instance represented by the value specified.
@@ -50,9 +50,7 @@ public enum Pawn {
         return Integer.toString(ordinal());
     }
 
-    public Direction[] getMoveDirections() {
-        return moveDirections;
-    }
+
 
 }
 
