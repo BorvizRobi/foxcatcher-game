@@ -1,12 +1,14 @@
 package foxcatcher.state;
 
-import lombok.Getter;
-
-import java.util.Objects;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import java.util.Vector;
+
 /**
  * Class representing the state of the game.
  */
+@Data
+@Slf4j
 public class FoxcatcherState implements Cloneable{
 
     public ChessBoard chessBoard;
@@ -41,6 +43,7 @@ public class FoxcatcherState implements Cloneable{
 
         Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromTile);
 
+            log.info("Pawn at ({},{}) is moved to ({},{})",moveFromCoordinate.getX(),moveFromCoordinate.getY(),moveToCoordinate.getX(),moveToCoordinate.getY());
             moveToTile.setPawn(moveFromTile.getPawn());
             moveFromTile.setPawn(Pawn.EMPTY);
 
