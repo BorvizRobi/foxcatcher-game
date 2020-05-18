@@ -11,6 +11,7 @@ public class Tile {
     private Pawn pawn;
 
 
+
     public boolean isEmpty(){
         if (pawn==Pawn.EMPTY)return true;
         else return false;

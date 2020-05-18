@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -22,6 +24,8 @@ public class ChessBoard {
     private Vector<Coordinate> dogPositions;
 
 
+
+
     public ChessBoard(){
 
         tiles= new Tile[8][8];
@@ -36,7 +40,9 @@ public class ChessBoard {
 
     public ChessBoard(int [][] a){
 
-        if(!isValidBoard(a)) throw new IllegalArgumentException();
+        if(!isValidBoard(a)) {
+            throw new IllegalArgumentException();
+        }
 
         dogPositions= new Vector<Coordinate>();
         tiles= new Tile[8][8];
@@ -69,7 +75,7 @@ public class ChessBoard {
         return tiles[x][y];
     }
 
-    public boolean isValidBoard(int [][] a){
+    private boolean isValidBoard(int [][] a){
 
         if (a == null || a.length != 8) {
             return false;

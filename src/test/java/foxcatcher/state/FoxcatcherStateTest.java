@@ -2,20 +2,86 @@ package foxcatcher.state;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Vector;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FoxcatcherStateTest {
 
-    @Test
-    void testIsValidBoard() {
+    private void assertFoxPosition(Coordinate expectedCoordinate,FoxcatcherState actual){
+        assertAll(
+                () ->assertEquals(expectedCoordinate,actual.chessBoard.getFoxPosition())
+        );
     }
 
     @Test
     void testMovePawn() {
+/*
+        assertArrayEquals((new FoxcatcherState (new int[][] {
+                {0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 1, 0, 1},
+
+        }).movePawn(new Coordinate(1,1),new Coordinate(2,2))),
+
+                new FoxcatcherState (new int[][] {
+                        {0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 2, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0, 0},
+                        {0, 1, 0, 1, 0, 1, 0, 1},
+
+                }).chessBoard.getTiles());*/
     }
 
     @Test
     void testCalculatePossibleMoveCoordinates() {
+        FoxcatcherState probaState = new FoxcatcherState (new int[][] {
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 0, 0, 0},
+                {0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+
+        });
+        assertTrue(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(2,2))).isEmpty());
+        assertFalse(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(1,1))).isEmpty());
+        assertFalse(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(3,3))).isEmpty());
+        assertEquals(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(1,1))),new Vector<Coordinate>(Arrays.asList(new Coordinate(0,0),new Coordinate(0,2))));
+        assertEquals(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(1,3))),new Vector<Coordinate>(Arrays.asList(new Coordinate(0,2),new Coordinate(0,4))));
+        assertEquals(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(3,3))),new Vector<Coordinate>(Arrays.asList(new Coordinate(2,4))));
+
+        FoxcatcherState probaState2 = new FoxcatcherState (new int[][] {
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 2, 0, 0, 0},
+                {0, 0, 0, 1, 0, 1, 0, 1},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+
+        });
+
+        assertFalse(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(3,4))).isEmpty());
+        assertFalse(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(4,7))).isEmpty());
+        assertFalse(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(6,4))).isEmpty());
+        assertEquals(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(3,4))),new Vector<Coordinate>(Arrays.asList(new Coordinate(2,3),new Coordinate(2,5))));
+        assertEquals(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(6,4))),new Vector<Coordinate>(Arrays.asList(new Coordinate(5,3),new Coordinate(5,5))));
+        assertEquals(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(4,7))),new Vector<Coordinate>(Arrays.asList(new Coordinate(3,6))));
+
     }
 
     @Test
@@ -64,5 +130,6 @@ class FoxcatcherStateTest {
 
     @Test
     void testToString() {
+
     }
 }

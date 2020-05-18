@@ -1,5 +1,8 @@
 package foxcatcher.state;
 
+import lombok.Getter;
+
+import java.util.Objects;
 import java.util.Vector;
 /**
  * Class representing the state of the game.
@@ -7,8 +10,9 @@ import java.util.Vector;
 public class FoxcatcherState implements Cloneable{
 
     public ChessBoard chessBoard;
-
-
+    /**
+     * The array representing the initial configuration of the chessboard.
+     */
     public static final int[][] INITIAL = {
             {0, 0, 2, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
@@ -95,6 +99,8 @@ public class FoxcatcherState implements Cloneable{
         return sb.toString();
     }
 
+
+
     public static void main(String[] args) {
 
         FoxcatcherState state = new FoxcatcherState();
@@ -107,5 +113,6 @@ public class FoxcatcherState implements Cloneable{
 
 
     }
+
 
 }
