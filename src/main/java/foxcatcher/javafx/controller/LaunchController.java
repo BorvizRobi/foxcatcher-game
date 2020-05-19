@@ -18,7 +18,7 @@ import java.io.IOException;
 public class LaunchController {
 
     @Inject
-    private FXMLLoader fxmlLoader;
+    private FXMLLoader fxmlLoader=new FXMLLoader();
 
     @FXML
     private TextField player1NameTextField;
@@ -33,10 +33,10 @@ public class LaunchController {
         if (player1NameTextField.getText().isEmpty() || player2NameTextField.getText().isEmpty()) {
             errorLabel.setText("Enter your names!");
         } else {
-            //fxmlLoader.setLocation(getClass().getResource("/fxml/game.fxml"));
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/game.fxml"));
-            //fxmlLoader.<GameController>getController().setPlayer1Name(player1NameTextField.getText());
-            //fxmlLoader.<GameController>getController().setPlayer2Name(player2NameTextField.getText());
+            fxmlLoader.setLocation(getClass().getResource("/fxml/game.fxml"));
+            Parent root = fxmlLoader.load();
+            fxmlLoader.<GameController>getController().setPlayer1Name(player1NameTextField.getText());
+            fxmlLoader.<GameController>getController().setPlayer2Name(player2NameTextField.getText());
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

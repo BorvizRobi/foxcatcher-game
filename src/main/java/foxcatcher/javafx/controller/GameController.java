@@ -23,7 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 
 import javax.inject.Inject;
@@ -49,7 +49,10 @@ public class GameController {
     private Instant startTime;
 
     private  ImageView foxImage;
-    private  ImageView dogImage;
+    private  ImageView dog1Image;
+    private  ImageView dog2Image;
+    private  ImageView dog3Image;
+    private  ImageView dog4Image;
 
 
     @FXML
@@ -84,10 +87,22 @@ public class GameController {
     @FXML
     public void initialize() {
 
+        foxImage = new ImageView(new Image(getClass().getResourceAsStream("/images/Fox.png")));
+        foxImage.setFitHeight(44);
+        foxImage.setFitWidth(44);
 
-        dogImage = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
-        dogImage.setFitHeight(44);
-        dogImage.setFitWidth(44);
+        dog1Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
+        dog1Image.setFitHeight(44);
+        dog1Image.setFitWidth(44);
+        dog2Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
+        dog2Image.setFitHeight(44);
+        dog2Image.setFitWidth(44);
+        dog3Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
+        dog3Image.setFitHeight(44);
+        dog3Image.setFitWidth(44);
+        dog4Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
+        dog4Image.setFitHeight(44);
+        dog4Image.setFitWidth(44);
 
         foxImage = new ImageView(new Image(getClass().getResourceAsStream("/images/Fox.png")));
         foxImage.setFitHeight(44);
@@ -106,9 +121,20 @@ public class GameController {
         resetGame();
        // ImageView view = (ImageView) gameGrid.getChildren().get(0);
         //view.setImage(foxImage);
-        Button clickedButton = (Button) gameGrid.getChildren().get(2);
+        Button clicked0Button = (Button) gameGrid.getChildren().get(2);
+        clicked0Button.setGraphic(foxImage);
 
-            clickedButton.setGraphic(dogImage);
+        Button clickedButton = (Button) gameGrid.getChildren().get(57);
+            clickedButton.setGraphic(dog1Image);
+
+        Button clicked1Button = (Button) gameGrid.getChildren().get(59);
+        clicked1Button.setGraphic(dog2Image);
+
+        Button clicked2Button = (Button) gameGrid.getChildren().get(61);
+        clicked2Button.setGraphic(dog3Image);
+
+        Button clicked3Button = (Button) gameGrid.getChildren().get(63);
+        clicked3Button.setGraphic(dog4Image);
     }
 
 
@@ -118,8 +144,8 @@ public class GameController {
         startTime = Instant.now();
         gameOver.setValue(false);
         //displayGameState();
-        //createStopWatch();
-        Platform.runLater(() -> messageLabel.setText("Good luck, " + player1Name + "!"));
+        createStopWatch();
+        Platform.runLater(() -> messageLabel.setText(player1Name + " Vs. "+ player2Name));
     }
 
     /*private void displayGameState() {
@@ -134,11 +160,28 @@ public class GameController {
         }
     }
     */
-/*
-    public void handleClickOnCube(MouseEvent mouseEvent) {
-        int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
-        int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
-        log.debug("Cube ({}, {}) is pressed", row, col);
+
+    public void handleClickOnTile(MouseEvent mouseEvent) {
+       // int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
+        //int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
+        //log.debug("Cube ({}, {}) is pressed", row, col);
+
+        Button clickedButton = (Button) mouseEvent.getTarget();
+        if(clickedButton.getGraphic()==dog1Image) {
+            clickedButton.setGraphic(null);
+        }
+        if(clickedButton.getGraphic()==dog2Image) {
+            clickedButton.setGraphic(null);
+        }
+        if(clickedButton.getGraphic()==dog3Image) {
+            clickedButton.setGraphic(null);
+        }
+        if(clickedButton.getGraphic()==dog4Image) {
+            clickedButton.setGraphic(null);
+        }
+        //else clickedButton.setGraphic(null);
+
+        /*
         if (! gameState.isSolved() && gameState.canRollToEmptySpace(row, col)) {
             steps.set(steps.get() + 1);
             gameState.rollToEmptySpace(row, col);
@@ -150,8 +193,8 @@ public class GameController {
                 giveUpButton.setText("Finish");
             }
         }
-        displayGameState();
-    }*/
+        displayGameState();*/
+    }
 /*
     public void handleResetButton(ActionEvent actionEvent)  {
         log.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
@@ -186,7 +229,7 @@ public class GameController {
                 .build();
         return result;
     }*/
-/*
+
     private void createStopWatch() {
         stopWatchTimeline = new Timeline(new KeyFrame(javafx.util.Duration.ZERO, e -> {
             long millisElapsed = startTime.until(Instant.now(), ChronoUnit.MILLIS);
@@ -194,7 +237,7 @@ public class GameController {
         }), new KeyFrame(javafx.util.Duration.seconds(1)));
         stopWatchTimeline.setCycleCount(Animation.INDEFINITE);
         stopWatchTimeline.play();
-    }*/
+    }
 
 
 }
