@@ -1,5 +1,6 @@
 package foxcatcher.javafx.controller;
 
+import foxcatcher.state.Coordinate;
 import foxcatcher.state.FoxcatcherState;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -9,29 +10,24 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Vector;
 
 @Slf4j
 public class GameController {
@@ -48,11 +44,13 @@ public class GameController {
     private IntegerProperty steps = new SimpleIntegerProperty();
     private Instant startTime;
 
-    private  ImageView foxImage;
-    private  ImageView dog1Image;
-    private  ImageView dog2Image;
-    private  ImageView dog3Image;
-    private  ImageView dog4Image;
+    private List<Image> pawnImages;
+    private  Image foxImage;
+    private  Image dogImage;
+
+    private Coordinate selectedPawnCoordinate;
+    private Vector<Coordinate> possiblemoveCoordinates;
+
 
 
     @FXML
@@ -87,26 +85,22 @@ public class GameController {
     @FXML
     public void initialize() {
 
-        foxImage = new ImageView(new Image(getClass().getResourceAsStream("/images/Fox.png")));
-        foxImage.setFitHeight(44);
-        foxImage.setFitWidth(44);
+        pawnImages = List.of(
+                new Image(getClass().getResource("/images/Dog.png").toExternalForm()),
+                new Image(getClass().getResource("/images/Dogimage.png").toExternalForm()),
+                new Image(getClass().getResource("/images/Foximage.png").toExternalForm())
+        );
 
-        dog1Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
-        dog1Image.setFitHeight(44);
-        dog1Image.setFitWidth(44);
-        dog2Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
-        dog2Image.setFitHeight(44);
-        dog2Image.setFitWidth(44);
-        dog3Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
-        dog3Image.setFitHeight(44);
-        dog3Image.setFitWidth(44);
-        dog4Image = new ImageView(new Image(getClass().getResourceAsStream("/images/Dog.png")));
-        dog4Image.setFitHeight(44);
-        dog4Image.setFitWidth(44);
+        foxImage = new Image(getClass().getResourceAsStream("/images/Foximage.png"));
 
-        foxImage = new ImageView(new Image(getClass().getResourceAsStream("/images/Fox.png")));
-        foxImage.setFitHeight(44);
-        foxImage.setFitWidth(44);
+       // foxImage.setFitWidth(44);
+
+        dogImage = new Image(getClass().getResourceAsStream("/images/Dog.png"));
+        //dog1Image.setFitHeight(44);
+        //dog1Image.setFitWidth(44);
+
+
+
 
 
        stepsLabel.textProperty().bind(steps.asString());
@@ -121,20 +115,7 @@ public class GameController {
         resetGame();
        // ImageView view = (ImageView) gameGrid.getChildren().get(0);
         //view.setImage(foxImage);
-        Button clicked0Button = (Button) gameGrid.getChildren().get(2);
-        clicked0Button.setGraphic(foxImage);
-
-        Button clickedButton = (Button) gameGrid.getChildren().get(57);
-            clickedButton.setGraphic(dog1Image);
-
-        Button clicked1Button = (Button) gameGrid.getChildren().get(59);
-        clicked1Button.setGraphic(dog2Image);
-
-        Button clicked2Button = (Button) gameGrid.getChildren().get(61);
-        clicked2Button.setGraphic(dog3Image);
-
-        Button clicked3Button = (Button) gameGrid.getChildren().get(63);
-        clicked3Button.setGraphic(dog4Image);
+        displayGameState();
     }
 
 
@@ -148,37 +129,60 @@ public class GameController {
         Platform.runLater(() -> messageLabel.setText(player1Name + " Vs. "+ player2Name));
     }
 
-    /*private void displayGameState() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                ImageView view = (ImageView) gameGrid.getChildren().get(i * 3 + j);
-                if (view.getImage() != null) {
-                    log.trace("Image({}, {}) = {}", i, j, view.getImage().getUrl());
+    private void displayGameState() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                //ImageView view = (ImageView) gameGrid.getChildren().get(i * 3 + j);
+                Button clickedButton = (Button) gameGrid.getChildren().get(i * 8 + j);
+                if(gameState.chessBoard.getTile(i,j).getPawn().getValue()!=0) {
+
+
+
+                    ImageView imageView = new ImageView(pawnImages.get(gameState.chessBoard.getTile(i, j).getPawn().getValue()));
+                    imageView.setFitWidth(44);
+                    imageView.setFitHeight(44);
+
+                    clickedButton.setGraphic(imageView);
+
+                    if (clickedButton.getGraphic() != null) {
+                        log.trace("Image({}, {}) = {}", i, j, imageView.getImage().getUrl());
+                    }
                 }
-                view.setImage(cubeImages.get(gameState.getTray()[i][j].getValue()));
+                else {
+
+                    clickedButton.setGraphic(null);
+                }
+                //view.setImage(cubeImages.get(gameState.getTray()[i][j].getValue()));
             }
         }
     }
-    */
+
 
     public void handleClickOnTile(MouseEvent mouseEvent) {
-       // int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
-        //int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
-        //log.debug("Cube ({}, {}) is pressed", row, col);
 
-        Button clickedButton = (Button) mouseEvent.getTarget();
-        if(clickedButton.getGraphic()==dog1Image) {
-            clickedButton.setGraphic(null);
+        int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
+        int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
+        log.debug("Cube ({}, {}) is pressed", row, col);
+
+        if(selectedPawnCoordinate==null) {
+            selectedPawnCoordinate=new Coordinate(row,col);
+            possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(gameState.getChessBoard().getTile(row,col));
         }
-        if(clickedButton.getGraphic()==dog2Image) {
-            clickedButton.setGraphic(null);
+        else{
+            Coordinate coordinate = new Coordinate(row,col);
+            if(possiblemoveCoordinates.contains(coordinate)) {
+                gameState.movePawn(selectedPawnCoordinate, coordinate);
+                displayGameState();
+                selectedPawnCoordinate = null;
+                possiblemoveCoordinates = null;
+            }
+            else{
+                selectedPawnCoordinate=new Coordinate(row,col);
+                possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(gameState.getChessBoard().getTile(row,col));
+            }
         }
-        if(clickedButton.getGraphic()==dog3Image) {
-            clickedButton.setGraphic(null);
-        }
-        if(clickedButton.getGraphic()==dog4Image) {
-            clickedButton.setGraphic(null);
-        }
+
+    }
         //else clickedButton.setGraphic(null);
 
         /*
@@ -193,7 +197,7 @@ public class GameController {
                 giveUpButton.setText("Finish");
             }
         }
-        displayGameState();*/
+        displayGameState();
     }
 /*
     public void handleResetButton(ActionEvent actionEvent)  {
