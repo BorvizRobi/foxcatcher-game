@@ -41,7 +41,7 @@ public class FoxcatcherState implements Cloneable{
         Tile moveFromTile = chessBoard.getTile(moveFromCoordinate);
         Tile moveToTile = chessBoard.getTile(moveToCoordinate);
 
-        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromTile);
+        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromCoordinate);
 
             log.info("Pawn at ({},{}) is moved to ({},{})",moveFromCoordinate.getX(),moveFromCoordinate.getY(),moveToCoordinate.getX(),moveToCoordinate.getY());
             moveToTile.setPawn(moveFromTile.getPawn());
@@ -51,8 +51,9 @@ public class FoxcatcherState implements Cloneable{
 
     }
 
-    public Vector<Coordinate> calculatePossibleMoveCoordinates(Tile moveFromTile){
+    public Vector<Coordinate> calculatePossibleMoveCoordinates(Coordinate moveFromCoordinate){
 
+        Tile moveFromTile=chessBoard.getTile(moveFromCoordinate);
         Vector<Coordinate> possibleMoveCoordinates=new Vector<Coordinate>();
 
         Direction[] possibleMoveDirections= moveFromTile.getPawn().getMoveDirections();
@@ -69,11 +70,11 @@ public class FoxcatcherState implements Cloneable{
 
     }
     public boolean canMovePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
-        return calculatePossibleMoveCoordinates(chessBoard.getTile(moveFromCoordinate)).contains(moveToCoordinate);
+        return calculatePossibleMoveCoordinates(moveFromCoordinate).contains(moveToCoordinate);
     }
 
     public boolean isGameOwer(){
-        return calculatePossibleMoveCoordinates(chessBoard.getTile( chessBoard.getFoxPosition())).isEmpty();
+        return calculatePossibleMoveCoordinates(chessBoard.getFoxPosition()).isEmpty();
     }
 
     public FoxcatcherState clone() {

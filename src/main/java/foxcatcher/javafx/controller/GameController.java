@@ -86,7 +86,7 @@ public class GameController {
     public void initialize() {
 
         pawnImages = List.of(
-                new Image(getClass().getResource("/images/Dog.png").toExternalForm()),
+                new Image(getClass().getResource("/images/Dogimage.png").toExternalForm()),
                 new Image(getClass().getResource("/images/Dogimage.png").toExternalForm()),
                 new Image(getClass().getResource("/images/Foximage.png").toExternalForm())
         );
@@ -95,7 +95,7 @@ public class GameController {
 
        // foxImage.setFitWidth(44);
 
-        dogImage = new Image(getClass().getResourceAsStream("/images/Dog.png"));
+        dogImage = new Image(getClass().getResourceAsStream("/images/Dogimage.png"));
         //dog1Image.setFitHeight(44);
         //dog1Image.setFitWidth(44);
 
@@ -166,7 +166,7 @@ public class GameController {
 
         if(selectedPawnCoordinate==null) {
             selectedPawnCoordinate=new Coordinate(row,col);
-            possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(gameState.getChessBoard().getTile(row,col));
+            possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
         }
         else{
             Coordinate coordinate = new Coordinate(row,col);
@@ -178,7 +178,7 @@ public class GameController {
             }
             else{
                 selectedPawnCoordinate=new Coordinate(row,col);
-                possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(gameState.getChessBoard().getTile(row,col));
+                possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
             }
         }
 

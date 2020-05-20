@@ -56,12 +56,12 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         });
-        assertTrue(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(2,2))).isEmpty());
-        assertFalse(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(1,1))).isEmpty());
-        assertFalse(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(3,3))).isEmpty());
-        assertEquals(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(1,1))),new Vector<Coordinate>(Arrays.asList(new Coordinate(0,0),new Coordinate(0,2))));
-        assertEquals(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(1,3))),new Vector<Coordinate>(Arrays.asList(new Coordinate(0,2),new Coordinate(0,4))));
-        assertEquals(probaState.calculatePossibleMoveCoordinates(probaState.chessBoard.getTile(new Coordinate(3,3))),new Vector<Coordinate>(Arrays.asList(new Coordinate(2,4))));
+        assertTrue(probaState.calculatePossibleMoveCoordinates(new Coordinate(2,2)).isEmpty());
+        assertFalse(probaState.calculatePossibleMoveCoordinates(new Coordinate(1,1)).isEmpty());
+        assertFalse(probaState.calculatePossibleMoveCoordinates(new Coordinate(3,3)).isEmpty());
+        assertEquals(probaState.calculatePossibleMoveCoordinates(new Coordinate(1,1)),new Vector<Coordinate>(Arrays.asList(new Coordinate(0,0),new Coordinate(0,2))));
+        assertEquals(probaState.calculatePossibleMoveCoordinates(new Coordinate(1,3)),new Vector<Coordinate>(Arrays.asList(new Coordinate(0,2),new Coordinate(0,4))));
+        assertEquals(probaState.calculatePossibleMoveCoordinates(new Coordinate(3,3)),new Vector<Coordinate>(Arrays.asList(new Coordinate(2,4))));
 
         FoxcatcherState probaState2 = new FoxcatcherState (new int[][] {
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -75,12 +75,12 @@ class FoxcatcherStateTest {
 
         });
 
-        assertFalse(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(3,4))).isEmpty());
-        assertFalse(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(4,7))).isEmpty());
-        assertFalse(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(6,4))).isEmpty());
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(3,4))),new Vector<Coordinate>(Arrays.asList(new Coordinate(2,3),new Coordinate(2,5))));
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(6,4))),new Vector<Coordinate>(Arrays.asList(new Coordinate(5,3),new Coordinate(5,5))));
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(probaState2.chessBoard.getTile(new Coordinate(4,7))),new Vector<Coordinate>(Arrays.asList(new Coordinate(3,6))));
+        assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3,4)).isEmpty());
+        assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(4,7)).isEmpty());
+        assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(6,4)).isEmpty());
+        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3,4)),new Vector<Coordinate>(Arrays.asList(new Coordinate(2,3),new Coordinate(2,5))));
+        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(6,4)),new Vector<Coordinate>(Arrays.asList(new Coordinate(5,3),new Coordinate(5,5))));
+        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(4,7)),new Vector<Coordinate>(Arrays.asList(new Coordinate(3,6))));
 
     }
 
