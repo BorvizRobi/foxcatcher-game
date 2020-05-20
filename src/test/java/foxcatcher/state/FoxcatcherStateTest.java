@@ -12,8 +12,19 @@ class FoxcatcherStateTest {
 
     private void assertFoxPosition(Coordinate expectedCoordinate,FoxcatcherState actual){
         assertAll(
-                () ->assertEquals(expectedCoordinate,actual.chessBoard.getFoxPosition())
+                () ->assertEquals(expectedCoordinate,actual.getFoxPosition())
         );
+    }
+
+    @Test
+    void testIsValidCoordinate() {
+        assertTrue(FoxcatcherState.isValidCoordinate(new Coordinate(1,1)));
+        assertTrue(FoxcatcherState.isValidCoordinate(new Coordinate(7,7)));
+        assertTrue(FoxcatcherState.isValidCoordinate(new Coordinate(0,0)));
+        assertFalse(FoxcatcherState.isValidCoordinate(new Coordinate(-1,-1)));
+        assertFalse(FoxcatcherState.isValidCoordinate(new Coordinate(8,8)));
+        assertFalse(FoxcatcherState.isValidCoordinate(new Coordinate(108,-5)));
+
     }
 
     @Test

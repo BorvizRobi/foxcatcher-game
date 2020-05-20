@@ -2,6 +2,7 @@ package foxcatcher.state;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Vector;
@@ -14,7 +15,19 @@ import java.util.Vector;
 public class FoxcatcherState implements Cloneable{
 
     @Setter(AccessLevel.NONE)
-    public ChessBoard chessBoard;
+    private  Pawn[][] chessBoard;
+
+    @Setter(AccessLevel.NONE)
+    private Coordinate foxPosition;
+
+    @Setter(AccessLevel.NONE)
+    private Vector<Coordinate> dogPositions;
+
+    public Pawn getPawn(Coordinate coordinate){
+
+        return chessBoard[coordinate.getX()][coordinate.getY()];
+
+    }
 
 
     /**
@@ -32,56 +45,132 @@ public class FoxcatcherState implements Cloneable{
     };
 
     public FoxcatcherState() {
-        chessBoard = new ChessBoard(INITIAL);
+        this(INITIAL);
     }
 
     public FoxcatcherState(int [][] a) {
-        chessBoard = new ChessBoard(a);
+
+        if (!isValidChessBoard(a)) {
+            throw new IllegalArgumentException();
+        }
+
+        initChessBoard(a);
     }
 
-    public void movePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
+    private boolean isValidChessBoard(int [][] a){
 
-        if(!canMovePawn(moveFromCoordinate,moveToCoordinate)) throw new IllegalArgumentException();
+        if (a == null || a.length != 8) {
+            return false;
+        }
+        boolean foundEmptyTiles = false;
+        boolean foundFox = false;
+        boolean foundDogs = false;
 
-        Tile moveFromTile = chessBoard.getTile(moveFromCoordinate);
-        Tile moveToTile = chessBoard.getTile(moveToCoordinate);
+        int EmptyTiles = 0;
+        int Dogs = 0;
 
-        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromCoordinate);
+        for (int[] row : a) {
+            if (row == null || row.length != 8) {
+                return false;
+            }
+            for (int space : row) {
+                if (space < 0 || space >= Pawn.values().length) {
+                    return false;
+                }
+                if (space == Pawn.EMPTY.getValue()) {
 
-            log.info("Pawn at ({},{}) is moved to ({},{})",moveFromCoordinate.getX(),moveFromCoordinate.getY(),moveToCoordinate.getX(),moveToCoordinate.getY());
-            moveToTile.setPawn(moveFromTile.getPawn());
-            moveFromTile.setPawn(Pawn.EMPTY);
+                    EmptyTiles++;
+                }
+                if (space == Pawn.DOG.getValue()) {
+
+                    Dogs++;
+                }
+                if (space == Pawn.FOX.getValue()) {
+
+                    foundFox = true;
+                }
+            }
+        }
+        if (EmptyTiles==59) foundEmptyTiles = true;
+        if (Dogs==4) foundDogs = true;
+
+        return foundEmptyTiles && foundDogs && foundFox;
+
+    }
+
+    public void initChessBoard(int [][] a){
+
+        if(!isValidChessBoard(a)) {
+            throw new IllegalArgumentException();
+        }
+
+        dogPositions= new Vector<Coordinate>();
+        chessBoard= new Pawn[8][8];
+
+        for(int i = 0 ; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                chessBoard[i][j]= Pawn.of(a[i][j]);
+                if (Pawn.of(a[i][j]) == Pawn.FOX) foxPosition = new Coordinate(i,j);
+                if (Pawn.of(a[i][j]) == Pawn.DOG) dogPositions.add(new Coordinate(i,j));
+            }
+        }
+    }
 
 
 
+    public boolean isGameOwer(){
+        return calculatePossibleMoveCoordinates(foxPosition).isEmpty();
+    }
+
+    public boolean canMovePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
+        return calculatePossibleMoveCoordinates(moveFromCoordinate).contains(moveToCoordinate);
     }
 
     public Vector<Coordinate> calculatePossibleMoveCoordinates(Coordinate moveFromCoordinate){
 
 
-        Tile moveFromTile=chessBoard.getTile(moveFromCoordinate);
+
         Vector<Coordinate> possibleMoveCoordinates=new Vector<Coordinate>();
 
-        Direction[] possibleMoveDirections= moveFromTile.getPawn().getMoveDirections();
+        Direction[] possibleMoveDirections= getPawn(moveFromCoordinate).getMoveDirections();
 
         if(possibleMoveDirections!=null)
         for(Direction direction : possibleMoveDirections ){
 
-            Coordinate moveCoordinate=moveFromTile.getCoordinate().moveToDirection(direction);
-            if(ChessBoard.isValidCoordinate(moveCoordinate) && chessBoard.getTile(moveCoordinate).isEmpty()) possibleMoveCoordinates.add(moveCoordinate);
+            Coordinate moveCoordinate=moveFromCoordinate.moveToDirection(direction);
+            if(isValidCoordinate(moveCoordinate) && getPawn(moveCoordinate) == Pawn.EMPTY) possibleMoveCoordinates.add(moveCoordinate);
 
         }
 
         return possibleMoveCoordinates;
 
     }
-    public boolean canMovePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
-        return calculatePossibleMoveCoordinates(moveFromCoordinate).contains(moveToCoordinate);
+
+    public void movePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
+
+        if(!canMovePawn(moveFromCoordinate,moveToCoordinate)) throw new IllegalArgumentException();
+
+
+        Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromCoordinate);
+
+        log.info("Pawn at ({},{}) is moved to ({},{})",moveFromCoordinate.getX(),moveFromCoordinate.getY(),moveToCoordinate.getX(),moveToCoordinate.getY());
+        chessBoard[moveToCoordinate.getX()][moveToCoordinate.getY()] = getPawn(moveFromCoordinate);
+        chessBoard[moveFromCoordinate.getX()][moveFromCoordinate.getY()]=Pawn.EMPTY;
+
+
+
     }
 
-    public boolean isGameOwer(){
-        return calculatePossibleMoveCoordinates(chessBoard.getFoxPosition()).isEmpty();
+
+    public static boolean isValidCoordinate(Coordinate coordinate){
+        int x = coordinate.getX();
+        int y = coordinate.getY();
+        return (x >=0 && x<=7) && (y >=0 && y <= 7);
+
     }
+
+
 
     public FoxcatcherState clone() {
         FoxcatcherState copy = null;
@@ -89,9 +178,9 @@ public class FoxcatcherState implements Cloneable{
             copy = (FoxcatcherState) super.clone();
         } catch (CloneNotSupportedException e) {
         }
-        copy.chessBoard = new ChessBoard();
-        for (int i = 0; i < chessBoard.getTiles().length; ++i) {
-            copy.chessBoard.getTiles()[i] = chessBoard.getTiles()[i].clone();
+        copy.chessBoard = new Pawn[chessBoard.length][];
+        for (int i = 0; i < chessBoard.length; ++i) {
+            copy.chessBoard[i] = chessBoard[i].clone();
         }
 
         return copy;
@@ -100,9 +189,9 @@ public class FoxcatcherState implements Cloneable{
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Tile[] row : chessBoard.getTiles()) {
-            for (Tile tile : row) {
-                sb.append(tile.getPawn()).append(' ');
+        for (Pawn[] row : chessBoard) {
+            for (Pawn pawn : row) {
+                sb.append(pawn.getValue()).append(' ');
             }
             sb.append('\n');
         }
