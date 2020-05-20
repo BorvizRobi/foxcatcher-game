@@ -1,6 +1,8 @@
 package foxcatcher.state;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Vector;
 
@@ -11,7 +13,10 @@ import java.util.Vector;
 @Slf4j
 public class FoxcatcherState implements Cloneable{
 
+    @Setter(AccessLevel.NONE)
     public ChessBoard chessBoard;
+
+
     /**
      * The array representing the initial configuration of the chessboard.
      */
@@ -52,6 +57,7 @@ public class FoxcatcherState implements Cloneable{
     }
 
     public Vector<Coordinate> calculatePossibleMoveCoordinates(Coordinate moveFromCoordinate){
+
 
         Tile moveFromTile=chessBoard.getTile(moveFromCoordinate);
         Vector<Coordinate> possibleMoveCoordinates=new Vector<Coordinate>();

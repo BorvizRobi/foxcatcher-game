@@ -45,11 +45,10 @@ public class GameController {
     private Instant startTime;
 
     private List<Image> pawnImages;
-    private  Image foxImage;
-    private  Image dogImage;
 
     private Coordinate selectedPawnCoordinate;
     private Vector<Coordinate> possiblemoveCoordinates;
+    int turnPlayer=1;
 
 
 
@@ -82,22 +81,23 @@ public class GameController {
         this.player2Name = player2Name;
     }
 
+    private void advanceTurnPlayer(){
+        if (turnPlayer==1){
+            turnPlayer=2;
+        }
+        else if(turnPlayer==2){
+            turnPlayer=1;
+        }
+    }
+
     @FXML
     public void initialize() {
 
         pawnImages = List.of(
-                new Image(getClass().getResource("/images/Dogimage.png").toExternalForm()),
-                new Image(getClass().getResource("/images/Dogimage.png").toExternalForm()),
-                new Image(getClass().getResource("/images/Foximage.png").toExternalForm())
+                new Image(getClass().getResource("/images/Dog.png").toExternalForm()),
+                new Image(getClass().getResource("/images/Dog.png").toExternalForm()),
+                new Image(getClass().getResource("/images/Fox.png").toExternalForm())
         );
-
-        foxImage = new Image(getClass().getResourceAsStream("/images/Foximage.png"));
-
-       // foxImage.setFitWidth(44);
-
-        dogImage = new Image(getClass().getResourceAsStream("/images/Dogimage.png"));
-        //dog1Image.setFitHeight(44);
-        //dog1Image.setFitWidth(44);
 
 
 
@@ -112,9 +112,8 @@ public class GameController {
                 stopWatchTimeline.stop();
             }
         });
+
         resetGame();
-       // ImageView view = (ImageView) gameGrid.getChildren().get(0);
-        //view.setImage(foxImage);
         displayGameState();
     }
 
@@ -134,6 +133,7 @@ public class GameController {
             for (int j = 0; j < 8; j++) {
                 //ImageView view = (ImageView) gameGrid.getChildren().get(i * 3 + j);
                 Button clickedButton = (Button) gameGrid.getChildren().get(i * 8 + j);
+
                 if(gameState.chessBoard.getTile(i,j).getPawn().getValue()!=0) {
 
 
@@ -149,12 +149,35 @@ public class GameController {
                     }
                 }
                 else {
-
-                    clickedButton.setGraphic(null);
+                   clickedButton.setGraphic(null);
                 }
+
+
                 //view.setImage(cubeImages.get(gameState.getTray()[i][j].getValue()));
             }
         }
+
+    }
+
+    private void displayPossibleMoves() {
+
+        if(!possiblemoveCoordinates.isEmpty()){
+            for(int i=0;i<possiblemoveCoordinates.size();i++){
+                Button button = (Button) gameGrid.getChildren().get(possiblemoveCoordinates.get(i).getX() * 8 + possiblemoveCoordinates.get(i).getY());
+                button.setText("a");
+            }
+        }
+
+    }
+    private void undisplayPossibleMoves() {
+
+        if(!possiblemoveCoordinates.isEmpty()){
+            for(int i=0;i<possiblemoveCoordinates.size();i++){
+                Button button = (Button) gameGrid.getChildren().get(possiblemoveCoordinates.get(i).getX() * 8 + possiblemoveCoordinates.get(i).getY());
+                button.setText("");
+            }
+        }
+
     }
 
 
@@ -164,23 +187,30 @@ public class GameController {
         int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
         log.debug("Cube ({}, {}) is pressed", row, col);
 
-        if(selectedPawnCoordinate==null) {
-            selectedPawnCoordinate=new Coordinate(row,col);
-            possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
-        }
-        else{
-            Coordinate coordinate = new Coordinate(row,col);
-            if(possiblemoveCoordinates.contains(coordinate)) {
-                gameState.movePawn(selectedPawnCoordinate, coordinate);
-                displayGameState();
-                selectedPawnCoordinate = null;
-                possiblemoveCoordinates = null;
+
+            if (selectedPawnCoordinate == null) {
+                selectedPawnCoordinate = new Coordinate(row, col);
+                possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
+
+                if (gameState.chessBoard.getTile(selectedPawnCoordinate).getPawn().getValue()== turnPlayer)displayPossibleMoves();
+
+            } else {
+                Coordinate coordinate = new Coordinate(row, col);
+                if (gameState.chessBoard.getTile(selectedPawnCoordinate).getPawn().getValue() == turnPlayer && possiblemoveCoordinates.contains(coordinate)) {
+                    gameState.movePawn(selectedPawnCoordinate, coordinate);
+                    displayGameState();
+                    selectedPawnCoordinate = null;
+                    undisplayPossibleMoves();
+                    possiblemoveCoordinates = null;
+                    advanceTurnPlayer();
+                } else {
+                    selectedPawnCoordinate = new Coordinate(row, col);
+                    undisplayPossibleMoves();
+                    possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
+
+                    if (gameState.chessBoard.getTile(selectedPawnCoordinate).getPawn().getValue()== turnPlayer)displayPossibleMoves();
+                }
             }
-            else{
-                selectedPawnCoordinate=new Coordinate(row,col);
-                possiblemoveCoordinates=gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
-            }
-        }
 
     }
         //else clickedButton.setGraphic(null);
