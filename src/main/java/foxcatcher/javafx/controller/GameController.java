@@ -195,7 +195,7 @@ public class GameController {
 
             } else {
                 Coordinate coordinate = new Coordinate(row, col);
-                if (gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer && possiblemoveCoordinates.contains(coordinate)) {
+                if (gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer && gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
                     gameState.movePawn(selectedPawnCoordinate, coordinate);
 
                     selectedPawnCoordinate = null;

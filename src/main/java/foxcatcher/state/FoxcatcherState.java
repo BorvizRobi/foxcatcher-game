@@ -14,22 +14,6 @@ import java.util.Vector;
 @Slf4j
 public class FoxcatcherState implements Cloneable{
 
-    @Setter(AccessLevel.NONE)
-    private  Pawn[][] chessBoard;
-
-    @Setter(AccessLevel.NONE)
-    private Coordinate foxPosition;
-
-    @Setter(AccessLevel.NONE)
-    private Vector<Coordinate> dogPositions;
-
-    public Pawn getPawn(Coordinate coordinate){
-
-        return chessBoard[coordinate.getX()][coordinate.getY()];
-
-    }
-
-
     /**
      * The array representing the initial configuration of the chessboard.
      */
@@ -44,10 +28,56 @@ public class FoxcatcherState implements Cloneable{
             {0, 1, 0, 1, 0, 1, 0, 1},
     };
 
+    /**
+     * The array storing the current configuration of the chessboard.
+     */
+    @Setter(AccessLevel.NONE)
+    private  Pawn[][] chessBoard;
+
+    /**
+     * The Coordinate of the fox.
+     */
+    @Setter(AccessLevel.NONE)
+    private Coordinate foxPosition;
+
+    /**
+     * The Coordinates of the dogs.
+     */
+    @Setter(AccessLevel.NONE)
+    private Vector<Coordinate> dogPositions;
+
+    /**
+     * Returns the pawn which can be found in the given coordinates of the chessboard.
+     * @param  coordinate coordinate of the chessboard.
+     * @return The pawn which can be found in the given coordinate.
+     * @throws IllegalArgumentException if the coordinate does not represent a valid coordinate of the chessboard.
+     */
+    public Pawn getPawn(Coordinate coordinate){
+        if(!isValidCoordinate(coordinate)){
+            throw new IllegalArgumentException();
+        }
+        return chessBoard[coordinate.getX()][coordinate.getY()];
+
+    }
+
+
+    /**
+     * Creates a {@code FoxcatcherState} object representing the (original)
+     * initial state of the game.
+     */
     public FoxcatcherState() {
         this(INITIAL);
     }
 
+    /**
+     * Creates a {@code FoxcatcherState} object that is initialized it with
+     * the specified array.
+     *
+     * @param a an array of size 3&#xd7;3 representing the initial configuration
+     *          of the chessboard.
+     * @throws IllegalArgumentException if the array does not represent a valid
+     *                                  configuration of the chessboard.
+     */
     public FoxcatcherState(int [][] a) {
 
         if (!isValidChessBoard(a)) {
@@ -56,6 +86,11 @@ public class FoxcatcherState implements Cloneable{
 
         initChessBoard(a);
     }
+    /**
+     * Checks whether the chessboard is valid.
+     *
+     * @return {@code true} if the chessboard is valid, {@code false} otherwise
+     */
 
     private boolean isValidChessBoard(int [][] a){
 
@@ -100,10 +135,6 @@ public class FoxcatcherState implements Cloneable{
 
     public void initChessBoard(int [][] a){
 
-        if(!isValidChessBoard(a)) {
-            throw new IllegalArgumentException();
-        }
-
         dogPositions= new Vector<Coordinate>();
         chessBoard= new Pawn[8][8];
 
@@ -118,7 +149,11 @@ public class FoxcatcherState implements Cloneable{
     }
 
 
-
+    /**
+     * Checks whether the game is over.
+     *
+     * @return {@code true} if the game is over, {@code false} otherwise
+     */
     public boolean isGameOwer(){
         return calculatePossibleMoveCoordinates(foxPosition).isEmpty();
     }
@@ -191,7 +226,7 @@ public class FoxcatcherState implements Cloneable{
         StringBuilder sb = new StringBuilder();
         for (Pawn[] row : chessBoard) {
             for (Pawn pawn : row) {
-                sb.append(pawn.getValue()).append(' ');
+                sb.append(pawn).append(' ');
             }
             sb.append('\n');
         }
