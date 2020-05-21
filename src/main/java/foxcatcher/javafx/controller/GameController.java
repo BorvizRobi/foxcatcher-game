@@ -6,10 +6,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -42,18 +39,24 @@ public class GameController {
     private String player2Name;
     private FoxcatcherState gameState;
     private IntegerProperty steps = new SimpleIntegerProperty();
+    private IntegerProperty turnPlayer = new SimpleIntegerProperty(1);
+
     private Instant startTime;
 
     private List<Image> images;
 
     private Coordinate selectedPawnCoordinate;
     private Vector<Coordinate> possiblemoveCoordinates;
-    int turnPlayer=1;
+
+
 
 
 
     @FXML
     private Label messageLabel;
+
+    @FXML
+    private Label turnLabel;
 
     @FXML
     private GridPane gameGrid;
@@ -82,11 +85,11 @@ public class GameController {
     }
 
     private void advanceTurnPlayer(){
-        if (turnPlayer==1){
-            turnPlayer=2;
+        if (turnPlayer.getValue()==1){
+            turnPlayer.set(2);
         }
-        else if(turnPlayer==2){
-            turnPlayer=1;
+        else if(turnPlayer.getValue()==2){
+            turnPlayer.set(1);
         }
     }
 
@@ -101,8 +104,6 @@ public class GameController {
 
 
 
-
-
        stepsLabel.textProperty().bind(steps.asString());
         gameOver.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -110,6 +111,14 @@ public class GameController {
                 log.debug("Saving result to database...");
                 //gameResultDao.persist(createGameResult());
                 stopWatchTimeline.stop();
+            }
+        });
+
+        turnPlayer.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(1)) {
+                turnLabel.setText(player1Name + "'s turn:");
+            }  else  if (newValue.equals(2)) {
+                turnLabel.setText(player2Name + "'s turn:");
             }
         });
 
@@ -126,6 +135,8 @@ public class GameController {
         //displayGameState();
         createStopWatch();
         Platform.runLater(() -> messageLabel.setText(player1Name + " Vs. "+ player2Name));
+        Platform.runLater(() -> turnLabel.setText(player1Name + "'s turn:"));
+
     }
 
     private void displayGameState() {
@@ -151,7 +162,6 @@ public class GameController {
                 else {
                    clickedButton.setGraphic(null);
                 }
-
 
                 //view.setImage(cubeImages.get(gameState.getTray()[i][j].getValue()));
             }
@@ -191,11 +201,11 @@ public class GameController {
                 selectedPawnCoordinate = new Coordinate(row, col);
                 possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
-                if (gameState.getPawn(selectedPawnCoordinate).getValue()== turnPlayer)displayPossibleMoves();
+                if (gameState.getPawn(selectedPawnCoordinate).getValue()==turnPlayer.getValue() )displayPossibleMoves();
 
             } else {
                 Coordinate coordinate = new Coordinate(row, col);
-                if (gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer && gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
+                if ( gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer.getValue()  && gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
                     gameState.movePawn(selectedPawnCoordinate, coordinate);
 
                     selectedPawnCoordinate = null;
@@ -203,12 +213,13 @@ public class GameController {
                     possiblemoveCoordinates = null;
                     displayGameState();
                     advanceTurnPlayer();
+                    steps.set(steps.get() + 1);
                 } else {
                     selectedPawnCoordinate = new Coordinate(row, col);
                     undisplayPossibleMoves();
                     possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
-                    if (gameState.getPawn(selectedPawnCoordinate).getValue()== turnPlayer)displayPossibleMoves();
+                    if (gameState.getPawn(selectedPawnCoordinate).getValue()==turnPlayer.getValue())displayPossibleMoves();
                 }
             }
 
