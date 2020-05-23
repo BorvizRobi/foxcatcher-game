@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import lombok.extern.slf4j.Slf4j;
+import util.guice.PersistenceModule;
+import foxcatcher.stats.PlayerStatsDao;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -15,15 +17,25 @@ import java.util.List;
 @Slf4j
 public class FoxcatcherApplication extends Application {
 
+    private GuiceContext context = new GuiceContext(this, () -> List.of(
+            new AbstractModule() {
+                @Override
+                protected void configure() {
+                    install(new PersistenceModule("foxcatcher-game"));
+                    bind(PlayerStatsDao.class);
+                }
+            }
+    ));
+
 
 
     @Inject
-    private FXMLLoader fxmlLoader= new FXMLLoader();
+    private FXMLLoader fxmlLoader;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         log.info("Starting application...");
-        //context.init();
+        context.init();
         fxmlLoader.setLocation(getClass().getResource("/fxml/launch.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Foxcatcher Game");

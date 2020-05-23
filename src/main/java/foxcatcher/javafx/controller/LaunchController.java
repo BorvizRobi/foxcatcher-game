@@ -18,7 +18,7 @@ import java.io.IOException;
 public class LaunchController {
 
     @Inject
-    private FXMLLoader fxmlLoader=new FXMLLoader();
+    private FXMLLoader fxmlLoader;
 
     @FXML
     private TextField player1NameTextField;

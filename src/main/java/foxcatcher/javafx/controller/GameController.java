@@ -1,5 +1,6 @@
 package foxcatcher.javafx.controller;
 
+import foxcatcher.stats.PlayerStatsDao;
 import foxcatcher.state.Coordinate;
 import foxcatcher.state.FoxcatcherState;
 import javafx.animation.Animation;
@@ -7,20 +8,25 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -32,6 +38,9 @@ public class GameController {
     @Inject
     private FXMLLoader fxmlLoader;
 
+    @Inject
+    private PlayerStatsDao playerStatsDao;
+
     //@Inject
     //private GameResultDao gameResultDao;
 
@@ -40,15 +49,11 @@ public class GameController {
     private FoxcatcherState gameState;
     private IntegerProperty steps = new SimpleIntegerProperty();
     private IntegerProperty turnPlayer = new SimpleIntegerProperty(1);
-
     private Instant startTime;
-
     private List<Image> images;
 
     private Coordinate selectedPawnCoordinate;
     private Vector<Coordinate> possiblemoveCoordinates;
-
-
 
 
 
@@ -75,7 +80,7 @@ public class GameController {
     @FXML
     private Button giveUpButton;
 
-    private BooleanProperty gameOver = new SimpleBooleanProperty();
+    private IntegerProperty gameOver = new SimpleIntegerProperty();
 
     public void setPlayer1Name(String player1Name) {
         this.player1Name = player1Name;
@@ -106,12 +111,19 @@ public class GameController {
 
        stepsLabel.textProperty().bind(steps.asString());
         gameOver.addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
+
                 log.info("Game is over");
                 log.debug("Saving result to database...");
-                //gameResultDao.persist(createGameResult());
                 stopWatchTimeline.stop();
-            }
+                if (newValue.equals(1)) {
+                    playerStatsDao.updatePlayerStats(player1Name, 0, 1);
+                    playerStatsDao.updatePlayerStats(player2Name, 1, 0);
+                }
+                else if(newValue.equals(2)) {
+                    playerStatsDao.updatePlayerStats(player1Name, 1, 0);
+                    playerStatsDao.updatePlayerStats(player2Name, 0, 1);
+                }
+
         });
 
         turnPlayer.addListener((observable, oldValue, newValue) -> {
@@ -123,7 +135,7 @@ public class GameController {
         });
 
         resetGame();
-        displayGameState();
+
     }
 
 
@@ -131,8 +143,8 @@ public class GameController {
         gameState = new FoxcatcherState(FoxcatcherState.INITIAL);
         steps.set(0);
         startTime = Instant.now();
-        gameOver.setValue(false);
-        //displayGameState();
+        gameOver.setValue(0);
+        displayGameState();
         createStopWatch();
         Platform.runLater(() -> messageLabel.setText(player1Name + " Vs. "+ player2Name));
         Platform.runLater(() -> turnLabel.setText(player1Name + "'s turn:"));
@@ -219,7 +231,7 @@ public class GameController {
                     undisplayPossibleMoves();
                     possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
-                    if (gameState.getPawn(selectedPawnCoordinate).getValue()==turnPlayer.getValue())displayPossibleMoves();
+                    if (gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer.getValue())displayPossibleMoves();
                 }
             }
 
@@ -249,14 +261,14 @@ public class GameController {
     }
 
  */
-/*
+
     public void handleGiveUpButton(ActionEvent actionEvent) throws IOException {
         String buttonText = ((Button) actionEvent.getSource()).getText();
         log.debug("{} is pressed", buttonText);
         if (buttonText.equals("Give Up")) {
             log.info("The game has been given up");
         }
-        gameOver.setValue(true);
+        gameOver.setValue(turnPlayer.getValue());
         log.info("Loading high scores scene...");
         fxmlLoader.setLocation(getClass().getResource("/fxml/highscores.fxml"));
         Parent root = fxmlLoader.load();
@@ -264,16 +276,7 @@ public class GameController {
         stage.setScene(new Scene(root));
         stage.show();
     }
-*//*
-    private GameResult createGameResult() {
-        GameResult result = GameResult.builder()
-                .player(playerName)
-                .solved(gameState.isSolved())
-                .duration(Duration.between(startTime, Instant.now()))
-                .steps(steps.get())
-                .build();
-        return result;
-    }*/
+
 
     private void createStopWatch() {
         stopWatchTimeline = new Timeline(new KeyFrame(javafx.util.Duration.ZERO, e -> {
