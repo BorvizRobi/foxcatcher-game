@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 /**
- * Class representing the result of a game played by a specific player.
+ * Class representing the stats of a specific player.
  */
 @Data
 @NoArgsConstructor
@@ -31,12 +31,12 @@ public class PlayerStats {
 
 
     /**
-     * The number of steps made by the player.
+     * The number of total wins.
      */
     private int wins;
 
     /**
-     * The duration of the game.
+     * The number of total losses.
      */
     private int losses;
 

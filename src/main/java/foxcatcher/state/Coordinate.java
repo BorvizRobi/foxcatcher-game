@@ -3,6 +3,8 @@ package foxcatcher.state;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Comparator;
+
 
 /**
  * Class for representing a coordinate.
@@ -23,4 +25,10 @@ public class Coordinate {
         return new Coordinate(this.x + direction.getDx(),this.y + direction.getDy());
     }
 
+
 }
+
+
+
+
+

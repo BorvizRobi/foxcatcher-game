@@ -189,6 +189,19 @@ public class FoxcatcherState implements Cloneable{
 
         Vector<Coordinate> possibleMoveCoordinates = calculatePossibleMoveCoordinates(moveFromCoordinate);
 
+        if(getPawn(moveFromCoordinate).equals(Pawn.FOX)){
+            foxPosition=moveToCoordinate;
+        }
+
+        if(getPawn(moveFromCoordinate).equals(Pawn.DOG)){
+
+            for (int i=0;i<dogPositions.size();i++){
+                if(dogPositions.get(i).equals(moveFromCoordinate)){
+                    dogPositions.set(i,moveToCoordinate);
+                }
+            }
+        }
+
         log.info("Pawn at ({},{}) is moved to ({},{})",moveFromCoordinate.getX(),moveFromCoordinate.getY(),moveToCoordinate.getX(),moveToCoordinate.getY());
         chessBoard[moveToCoordinate.getX()][moveToCoordinate.getY()] = getPawn(moveFromCoordinate);
         chessBoard[moveFromCoordinate.getX()][moveFromCoordinate.getY()]=Pawn.EMPTY;

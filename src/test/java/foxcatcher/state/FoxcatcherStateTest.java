@@ -2,9 +2,7 @@ package foxcatcher.state;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Vector;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +11,12 @@ class FoxcatcherStateTest {
     private void assertFoxPosition(Coordinate expectedCoordinate, FoxcatcherState actual) {
         assertAll(
                 () -> assertEquals(expectedCoordinate, actual.getFoxPosition())
+        );
+    }
+
+    private void assertDogPositions(Vector<Coordinate> expectedCoordinate, FoxcatcherState actual) {
+        assertAll(
+                () -> assertTrue(expectedCoordinate.containsAll(actual.getDogPositions()))
         );
     }
 
@@ -90,7 +94,16 @@ class FoxcatcherStateTest {
                 {Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY},
                 {Pawn.EMPTY, Pawn.DOG, Pawn.EMPTY, Pawn.DOG, Pawn.EMPTY, Pawn.DOG, Pawn.EMPTY, Pawn.DOG}
         }, state.getChessBoard());
+
         assertFoxPosition(new Coordinate(0, 2), state);
+
+        Vector<Coordinate> expectedDogPositions = new Vector<Coordinate>();
+        expectedDogPositions.add(new Coordinate(7,7));
+        expectedDogPositions.add(new Coordinate(7,5));
+        expectedDogPositions.add(new Coordinate(7,3));
+        expectedDogPositions.add(new Coordinate(7,1));
+        assertDogPositions(expectedDogPositions,state);
+
     }
 
     @Test
@@ -106,30 +119,55 @@ class FoxcatcherStateTest {
 
     @Test
     void testMovePawn() {
-/*
-        assertArrayEquals((new FoxcatcherState (new int[][] {
+
+        FoxcatcherState probaState = new FoxcatcherState(new int[][]{
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 1, 0, 0, 0},
+                {0, 1, 0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+
+        });
+        probaState.movePawn(new Coordinate(2,2),new Coordinate(1,1));
+        assertFoxPosition(new Coordinate(1, 1), probaState);
+        probaState.movePawn(new Coordinate(1,1),new Coordinate(0,2));
+        assertFoxPosition(new Coordinate(0, 2), probaState);
+        probaState.movePawn(new Coordinate(6,2),new Coordinate(5,3));
+
+        Vector<Coordinate> expectedDogPositions = new Vector<Coordinate>();
+        expectedDogPositions.add(new Coordinate(5,3));
+        expectedDogPositions.add(new Coordinate(5,1));
+        expectedDogPositions.add(new Coordinate(3,3));
+        expectedDogPositions.add(new Coordinate(4,4));
+        assertDogPositions(expectedDogPositions,probaState);
+
+        FoxcatcherState probaState2 = new FoxcatcherState(new int[][]{
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 2, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 0, 1, 0, 1, 0, 1, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 1, 0, 1, 0, 1, 0, 1},
 
-        }).movePawn(new Coordinate(1,1),new Coordinate(2,2))),
+        });
+        probaState2.movePawn(new Coordinate(2,2),new Coordinate(3,1));
+        assertFoxPosition(new Coordinate(3, 1), probaState2);
+        probaState2.movePawn(new Coordinate(3,1),new Coordinate(4,0));
+        assertFoxPosition(new Coordinate(4, 0), probaState2);
+        probaState2.movePawn(new Coordinate(6,2),new Coordinate(5,1));
 
-                new FoxcatcherState (new int[][] {
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 2, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 1, 0, 1, 0, 1, 0, 1},
+        Vector<Coordinate> expectedDogPositions2 = new Vector<Coordinate>();
+        expectedDogPositions2.add(new Coordinate(6,0));
+        expectedDogPositions2.add(new Coordinate(5,1));
+        expectedDogPositions2.add(new Coordinate(6,4));
+        expectedDogPositions2.add(new Coordinate(6,6));
+        assertDogPositions(expectedDogPositions2,probaState2);
 
-                }).chessBoard.getTiles());*/
     }
 
     @Test
@@ -145,6 +183,15 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         });
+        assertFoxPosition(new Coordinate(2, 2), probaState);
+
+        Vector<Coordinate> expectedDogPositions = new Vector<Coordinate>();
+        expectedDogPositions.add(new Coordinate(1,1));
+        expectedDogPositions.add(new Coordinate(3,3));
+        expectedDogPositions.add(new Coordinate(3,1));
+        expectedDogPositions.add(new Coordinate(1,3));
+        assertDogPositions(expectedDogPositions,probaState);
+
         assertTrue(probaState.calculatePossibleMoveCoordinates(new Coordinate(2, 2)).isEmpty());
         assertFalse(probaState.calculatePossibleMoveCoordinates(new Coordinate(1, 1)).isEmpty());
         assertFalse(probaState.calculatePossibleMoveCoordinates(new Coordinate(3, 3)).isEmpty());
@@ -163,13 +210,20 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         });
-
+        assertFoxPosition(new Coordinate(3, 4), probaState2);
         assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3, 4)).isEmpty());
         assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(4, 7)).isEmpty());
         assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(6, 4)).isEmpty());
         assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3, 4)), new Vector<Coordinate>(Arrays.asList(new Coordinate(2, 3), new Coordinate(2, 5))));
         assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(6, 4)), new Vector<Coordinate>(Arrays.asList(new Coordinate(5, 3), new Coordinate(5, 5))));
         assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(4, 7)), new Vector<Coordinate>(Collections.singletonList(new Coordinate(3, 6))));
+
+        Vector<Coordinate> expectedDogPositions2 = new Vector<Coordinate>();
+        expectedDogPositions.add(new Coordinate(6,4));
+        expectedDogPositions.add(new Coordinate(4,3));
+        expectedDogPositions.add(new Coordinate(4,5));
+        expectedDogPositions.add(new Coordinate(4,7));
+        assertDogPositions(expectedDogPositions,probaState2);
 
     }
 
@@ -226,6 +280,27 @@ class FoxcatcherStateTest {
                 + "0 0 0 0 0 0 0 0 \n"
                 + "0 0 0 0 0 0 0 0 \n"
                 + "0 1 0 1 0 1 0 1 \n", state.toString());
+
+        FoxcatcherState state2 = new FoxcatcherState(new int[][]{
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 0, 0, 0},
+                {0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+
+        });
+
+        assertEquals("0 0 0 0 0 0 0 0 \n"
+                + "0 1 0 1 0 0 0 0 \n"
+                + "0 0 2 0 0 0 0 0 \n"
+                + "0 1 0 1 0 0 0 0 \n"
+                + "0 0 0 0 0 0 0 0 \n"
+                + "0 0 0 0 0 0 0 0 \n"
+                + "0 0 0 0 0 0 0 0 \n"
+                + "0 0 0 0 0 0 0 0 \n", state2.toString());
 
     }
 }

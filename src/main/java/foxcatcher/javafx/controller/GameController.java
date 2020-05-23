@@ -114,6 +114,7 @@ public class GameController {
 
                 log.info("Game is over");
                 log.debug("Saving result to database...");
+
                 stopWatchTimeline.stop();
                 if (newValue.equals(1)) {
                     playerStatsDao.updatePlayerStats(player1Name, 0, 1);
@@ -263,6 +264,7 @@ public class GameController {
  */
 
     public void handleGiveUpButton(ActionEvent actionEvent) throws IOException {
+
         String buttonText = ((Button) actionEvent.getSource()).getText();
         log.debug("{} is pressed", buttonText);
         if (buttonText.equals("Give Up")) {

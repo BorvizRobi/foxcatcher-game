@@ -1,4 +1,4 @@
 /**
- * Provides classes for managing game stats.
+ * Provides classes for managing player stats.
  */
 package foxcatcher.stats;

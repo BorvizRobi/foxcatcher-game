@@ -36,9 +36,9 @@ public class PlayerStatsDao extends GenericJpaDao<PlayerStats> {
     public void updatePlayerStats(String player,int win,int lost) {
 
         try {
-            PlayerStats playerStats =  Optional.of(entityManager.createQuery("SELECT r FROM PlayerStats r WHERE r.player = :player", PlayerStats.class)
+            PlayerStats playerStats =  entityManager.createQuery("SELECT r FROM PlayerStats r WHERE r.player = :player", PlayerStats.class)
                     .setParameter("player", player)
-                    .getSingleResult()).get();
+                    .getSingleResult();
 
             playerStats.setWins(playerStats.getWins()+win);
             playerStats.setLosses(playerStats.getLosses()+lost);
