@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Vector;
 
 @Slf4j
 public class LaunchController {
@@ -35,8 +36,12 @@ public class LaunchController {
         } else {
             fxmlLoader.setLocation(getClass().getResource("/fxml/game.fxml"));
             Parent root = fxmlLoader.load();
-            fxmlLoader.<GameController>getController().setPlayer1Name(player1NameTextField.getText());
-            fxmlLoader.<GameController>getController().setPlayer2Name(player2NameTextField.getText());
+
+            Vector<String>playerNames=new Vector<String>();
+            playerNames.add("");
+            playerNames.add(player1NameTextField.getText());
+            playerNames.add(player2NameTextField.getText());
+            fxmlLoader.<GameController>getController().setPlayerNames(playerNames);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

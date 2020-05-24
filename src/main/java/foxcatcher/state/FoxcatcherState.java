@@ -155,8 +155,22 @@ public class FoxcatcherState implements Cloneable{
      * @return {@code true} if the game is over, {@code false} otherwise
      */
     public boolean isGameOwer(){
-        return calculatePossibleMoveCoordinates(foxPosition).isEmpty();
+
+        if(calculatePossibleMoveCoordinates(foxPosition).isEmpty())return true;
+
+        return getDogPositions().stream().allMatch(coordinate -> coordinate.getX()<foxPosition.getX());
     }
+
+    public int whoIsTheWinner(){
+
+        if(calculatePossibleMoveCoordinates(foxPosition).isEmpty()) return 1;
+
+        if(getDogPositions().stream().allMatch(coordinate -> coordinate.getX()<foxPosition.getX())) return 2;
+
+        return 0;
+
+    }
+
 
     public boolean canMovePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
         return calculatePossibleMoveCoordinates(moveFromCoordinate).contains(moveToCoordinate);
