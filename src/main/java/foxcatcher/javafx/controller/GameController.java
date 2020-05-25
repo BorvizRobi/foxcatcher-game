@@ -42,10 +42,8 @@ public class GameController {
     private PlayerStatsDao playerStatsDao;
 
     private Vector<String> playerNames;
-
     private FoxcatcherState gameState;
     private IntegerProperty steps = new SimpleIntegerProperty();
-    private IntegerProperty turnPlayer = new SimpleIntegerProperty(1);
     private Instant startTime;
     private List<Image> images;
 
@@ -79,16 +77,7 @@ public class GameController {
     private IntegerProperty gameOver = new SimpleIntegerProperty();
 
 
-    public void setPlayerNames(Vector<String> playerNames){this.playerNames=playerNames; }
 
-    private void advanceTurnPlayer(){
-        if (turnPlayer.getValue()==1){
-            turnPlayer.set(2);
-        }
-        else if(turnPlayer.getValue()==2){
-            turnPlayer.set(1);
-        }
-    }
 
     @FXML
     public void initialize() {
@@ -107,23 +96,16 @@ public class GameController {
                 log.debug("Saving result to database...");
 
                 stopWatchTimeline.stop();
+
                 if (newValue.equals(1)) {
-                    playerStatsDao.updatePlayerStats(playerNames.get(1), 1, 0);
-                    playerStatsDao.updatePlayerStats(playerNames.get(2), 0, 1);
+                    playerStatsDao.updatePlayerStats(playerNames.get(1), true);
+                    playerStatsDao.updatePlayerStats(playerNames.get(2), false);
                 }
                 else if(newValue.equals(2)) {
-                    playerStatsDao.updatePlayerStats(playerNames.get(1), 0, 1);
-                    playerStatsDao.updatePlayerStats(playerNames.get(2), 1, 0);
+                    playerStatsDao.updatePlayerStats(playerNames.get(1), true);
+                    playerStatsDao.updatePlayerStats(playerNames.get(2), false);
                 }
 
-        });
-
-        turnPlayer.addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals(1)) {
-                turnLabel.setText(playerNames.get(1) + "'s turn:");
-            }  else  if (newValue.equals(2)) {
-                turnLabel.setText(playerNames.get(2) + "'s turn:");
-            }
         });
 
         resetGame();
@@ -132,7 +114,7 @@ public class GameController {
 
 
     private void resetGame() {
-        gameState = new FoxcatcherState(FoxcatcherState.INITIAL);
+        gameState = new FoxcatcherState();
         steps.set(0);
         startTime = Instant.now();
         gameOver.setValue(0);
@@ -142,48 +124,17 @@ public class GameController {
         Platform.runLater(() -> turnLabel.setText(playerNames.get(1) + "'s turn:"));
 
     }
-/*
-    private void displayGameState() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                //ImageView view = (ImageView) gameGrid.getChildren().get(i * 3 + j);
-                Button clickedButton = (Button) gameGrid.getChildren().get(i * 8 + j);
 
-                if(gameState.getChessBoard()[i][j].getValue()!=0) {
-
-
-
-                    ImageView imageView = new ImageView(images.get(gameState.getChessBoard()[i][j].getValue()));
-                    imageView.setFitWidth(44);
-                    imageView.setFitHeight(44);
-
-                    clickedButton.setGraphic(imageView);
-
-                    if (clickedButton.getGraphic() != null) {
-                        log.trace("Image({}, {}) = {}", i, j, imageView.getImage().getUrl());
-                    }
-                }
-                else {
-                   clickedButton.setGraphic(null);
-                }
-
-                //view.setImage(cubeImages.get(gameState.getTray()[i][j].getValue()));
-            }
-        }
-
-    }
-    */
     private void displayPawns() {
-
 
         for (int i = 0; i < gameState.getDogPositions().size(); i++) {
 
-            //ImageView view = (ImageView) gameGrid.getChildren().get(i * 3 + j);
+
             Button button = (Button) gameGrid.getChildren().get(gameState.getDogPositions().get(i).getX() * 8 + gameState.getDogPositions().get(i).getY());
 
             ImageView imageView = new ImageView(images.get(1));
-            imageView.setFitWidth(44);
-            imageView.setFitHeight(44);
+            imageView.setFitWidth(42);
+            imageView.setFitHeight(42);
 
             button.setGraphic(imageView);
 
@@ -197,8 +148,8 @@ public class GameController {
         Button button = (Button) gameGrid.getChildren().get(gameState.getFoxPosition().getX() * 8 + gameState.getFoxPosition().getY());
 
         ImageView imageView = new ImageView(images.get(2));
-        imageView.setFitWidth(44);
-        imageView.setFitHeight(44);
+        imageView.setFitWidth(42);
+        imageView.setFitHeight(42);
         button.setGraphic(imageView);
 
         if (button.getGraphic() != null) {
@@ -209,12 +160,10 @@ public class GameController {
 
     private void unDisplayPawns() {
 
-
         for (int i = 0; i < gameState.getDogPositions().size(); i++) {
 
             Button button = (Button) gameGrid.getChildren().get(gameState.getDogPositions().get(i).getX() * 8 + gameState.getDogPositions().get(i).getY());
             button.setGraphic(null);
-
         }
 
         Button button = (Button) gameGrid.getChildren().get(gameState.getFoxPosition().getX() * 8 + gameState.getFoxPosition().getY());
@@ -230,8 +179,8 @@ public class GameController {
                 Button button=(Button)gameGrid.getChildren().get(possiblemoveCoordinates.get(i).getX()*8+possiblemoveCoordinates.get(i).getY());
                 ImageView imageView=new ImageView(images.get(0));
 
-                imageView.setFitWidth(44);
-                imageView.setFitHeight(44);
+                imageView.setFitWidth(42);
+                imageView.setFitHeight(42);
                 button.setGraphic(imageView);
 
             }
@@ -259,11 +208,15 @@ public class GameController {
                 selectedPawnCoordinate = new Coordinate(row, col);
                 possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
-                if (!gameState.isGameOwer() && gameState.getPawn(selectedPawnCoordinate).getValue()==turnPlayer.getValue() )displayPossibleMoves();
+                if (!gameState.isGameOwer() && gameState.getPawn(selectedPawnCoordinate).getValue()==gameState.getActivePlayer()) {
+                    displayPossibleMoves();
+                }
 
             } else {
+
                 Coordinate coordinate = new Coordinate(row, col);
-                if (!gameState.isGameOwer() && gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer.getValue()  && gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
+
+                if (!gameState.isGameOwer() &&  gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
 
                     unDisplayPawns();
                     undisplayPossibleMoves();
@@ -273,46 +226,57 @@ public class GameController {
 
                     selectedPawnCoordinate = null;
                     possiblemoveCoordinates = null;
-                    //displayGameState();
+
                     steps.set(steps.get() + 1);
 
+                    setTurnLabel(gameState.getActivePlayer());
+
                     if (gameState.isGameOwer()) {
-                        gameOver.setValue(gameState.whoIsTheWinner());
-                        log.info("Player {} has won the game in {} steps", playerNames.get(gameState.whoIsTheWinner()), steps.get());
-                        messageLabel.setText("Congratulations, " + playerNames.get(gameState.whoIsTheWinner()) + " you are the winner!");
-                        turnLabel.setText(null);
-                        giveUpButton.setText("Finish");
+                        handleGameOver();
                     }
-                    advanceTurnPlayer();
+
 
                 } else if(!gameState.isGameOwer()){
                     selectedPawnCoordinate = new Coordinate(row, col);
                     undisplayPossibleMoves();
                     possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
-                    if (gameState.getPawn(selectedPawnCoordinate).getValue() == turnPlayer.getValue())displayPossibleMoves();
+                    if (gameState.getPawn(selectedPawnCoordinate).getValue() == gameState.getActivePlayer()){
+                        displayPossibleMoves();
+                    }
                 }
             }
 
     }
-        //else clickedButton.setGraphic(null);
 
-        /*
-        if (! gameState.isSolved() && gameState.canRollToEmptySpace(row, col)) {
-            steps.set(steps.get() + 1);
-            gameState.rollToEmptySpace(row, col);
-            if (gameState.isSolved()) {
-                gameOver.setValue(true);
-                log.info("Player {} has solved the game in {} steps", playerName, steps.get());
-                messageLabel.setText("Congratulations, " + playerName + "!");
-                resetButton.setDisable(true);
-                giveUpButton.setText("Finish");
-            }
-        }
-        displayGameState();
+    private void handleGameOver(){
+
+        gameOver.setValue(gameState.whoIsTheWinner());
+        log.info("Player {} has won the game in {} steps", playerNames.get(gameState.whoIsTheWinner()), steps.get());
+        messageLabel.setText("Congratulations, " + playerNames.get(gameState.whoIsTheWinner()) );
+        turnLabel.setText("you are the winner!");
+        giveUpButton.setText("Finish");
+
     }
-*/
-    public void loadHighscores(ActionEvent actionEvent)throws IOException{
+
+
+    public void handleGiveUpButton(ActionEvent actionEvent)throws IOException{
+
+        String buttonText = ((Button) actionEvent.getSource()).getText();
+        log.debug("{} is pressed", buttonText);
+        if (buttonText.equals("Give Up")) {
+            log.info("The game has been given up");
+            gameOver.setValue(gameState.getNextActivePlayer());
+            loadHighScores(actionEvent);
+
+
+        }
+        else if(buttonText.equals("Finish")) {
+            loadHighScores(actionEvent);
+        }
+    }
+
+    public void loadHighScores(ActionEvent actionEvent)throws IOException{
         log.info("Loading high scores scene...");
         fxmlLoader.setLocation(getClass().getResource("/fxml/highscores.fxml"));
         Parent root = fxmlLoader.load();
@@ -321,24 +285,6 @@ public class GameController {
         stage.show();
     }
 
-    public void handleGiveUpButton(ActionEvent actionEvent)throws IOException{
-
-        String buttonText = ((Button) actionEvent.getSource()).getText();
-        log.debug("{} is pressed", buttonText);
-        if (buttonText.equals("Give Up")) {
-            log.info("The game has been given up");
-            advanceTurnPlayer();
-            gameOver.setValue(turnPlayer.getValue());
-            loadHighscores(actionEvent);
-
-
-        }
-        else if(buttonText.equals("Finish")) {
-            loadHighscores(actionEvent);
-        }
-    }
-
-
     private void createStopWatch() {
         stopWatchTimeline = new Timeline(new KeyFrame(javafx.util.Duration.ZERO, e -> {
             long millisElapsed = startTime.until(Instant.now(), ChronoUnit.MILLIS);
@@ -346,6 +292,19 @@ public class GameController {
         }), new KeyFrame(javafx.util.Duration.seconds(1)));
         stopWatchTimeline.setCycleCount(Animation.INDEFINITE);
         stopWatchTimeline.play();
+    }
+
+    public void setPlayerNames(Vector<String> playerNames){
+        this.playerNames=playerNames;
+    }
+
+    private void setTurnLabel(int turnPlayer){
+
+        if (turnPlayer==1) {
+            turnLabel.setText(playerNames.get(1) + "'s turn:");
+        }  else  if (turnPlayer==2) {
+            turnLabel.setText(playerNames.get(2) + "'s turn:");
+        }
     }
 
 

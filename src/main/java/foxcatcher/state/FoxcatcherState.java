@@ -2,7 +2,6 @@ package foxcatcher.state;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Vector;
@@ -47,10 +46,40 @@ public class FoxcatcherState implements Cloneable{
     private Vector<Coordinate> dogPositions;
 
     /**
+     * The active player.
+     */
+    @Setter(AccessLevel.NONE)
+    private int activePlayer;
+
+    /**
+     * Advancing the active player.
+     */
+    private void advanceActivePlayer(){
+        if (activePlayer == 1){
+            activePlayer = 2;
+        }
+        else if(activePlayer==2){
+            activePlayer=1;
+        }
+    }
+
+    /**
+     * Returns the next active player.
+     * @return The next active player number.
+     */
+    public int getNextActivePlayer(){
+        if (activePlayer == 1){
+            return 2;
+        }
+        else return 1;
+
+    }
+
+    /**
      * Returns the pawn which can be found in the given coordinates of the chessboard.
-     * @param  coordinate coordinate of the chessboard.
+     * @param  coordinate Coordinate of the chessboard.
      * @return The pawn which can be found in the given coordinate.
-     * @throws IllegalArgumentException if the coordinate does not represent a valid coordinate of the chessboard.
+     * @throws IllegalArgumentException If the coordinate does not represent a valid coordinate of the chessboard.
      */
     public Pawn getPawn(Coordinate coordinate){
         if(!isValidCoordinate(coordinate)){
@@ -66,32 +95,44 @@ public class FoxcatcherState implements Cloneable{
      * initial state of the game.
      */
     public FoxcatcherState() {
-        this(INITIAL);
+        this(INITIAL,1);
     }
 
     /**
      * Creates a {@code FoxcatcherState} object that is initialized it with
      * the specified array.
      *
-     * @param a an array of size 3&#xd7;3 representing the initial configuration
+     * @param a An array of size 8&#xd7;8 representing the initial configuration
      *          of the chessboard.
-     * @throws IllegalArgumentException if the array does not represent a valid
-     *                                  configuration of the chessboard.
+     * @param activePlayer The active player.
+     * @throws IllegalArgumentException If the array does not represent a valid
+     *                                  configuration of the chessboard
+     *                                  or the active player is not valid.
      */
-    public FoxcatcherState(int [][] a) {
+    public FoxcatcherState(int [][] a,int activePlayer) {
 
-        if (!isValidChessBoard(a)) {
+        if (!isValidChessBoard(a) || !isValidActivePlayer(activePlayer)) {
             throw new IllegalArgumentException();
         }
 
         initChessBoard(a);
+        this.activePlayer=activePlayer;
     }
+
+    /**
+     * Checks whether the active player is valid.
+     *
+     * @return {@code true} if the active player is valid, {@code false} otherwise
+     */
+    private boolean isValidActivePlayer(int activePlayer){
+        return activePlayer == 1 || activePlayer == 2;
+    }
+
     /**
      * Checks whether the chessboard is valid.
      *
      * @return {@code true} if the chessboard is valid, {@code false} otherwise
      */
-
     private boolean isValidChessBoard(int [][] a){
 
         if (a == null || a.length != 8) {
@@ -149,36 +190,30 @@ public class FoxcatcherState implements Cloneable{
     }
 
 
+
     /**
-     * Checks whether the game is over.
+     * Checks whether the pawn can be moved from a specific coordinate to another coordinate on the chessboard.
      *
-     * @return {@code true} if the game is over, {@code false} otherwise
+     * @param moveFromCoordinate A coordinate to move from.
+     * @param moveToCoordinate A coordinate to move to.
+     *
+     * @return {@code true} if the move is possible, {@code false} otherwise.
      */
-    public boolean isGameOwer(){
-
-        if(calculatePossibleMoveCoordinates(foxPosition).isEmpty())return true;
-
-        return getDogPositions().stream().allMatch(coordinate -> coordinate.getX()<foxPosition.getX());
-    }
-
-    public int whoIsTheWinner(){
-
-        if(calculatePossibleMoveCoordinates(foxPosition).isEmpty()) return 1;
-
-        if(getDogPositions().stream().allMatch(coordinate -> coordinate.getX()<foxPosition.getX())) return 2;
-
-        return 0;
-
-    }
-
-
     public boolean canMovePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
-        return calculatePossibleMoveCoordinates(moveFromCoordinate).contains(moveToCoordinate);
+
+        return calculatePossibleMoveCoordinates(moveFromCoordinate).contains(moveToCoordinate) && getPawn(moveFromCoordinate).getValue()==activePlayer;
+
     }
 
+    /**
+     * Calculate all of the possible move coordinates, from the given coordinate on the chessboard.
+     *
+     * @param moveFromCoordinate A coordinate to move from.
+     *
+     *
+     * @return {@code Vector<Coordinate>} which is containing all of the possible move coordinates.
+     */
     public Vector<Coordinate> calculatePossibleMoveCoordinates(Coordinate moveFromCoordinate){
-
-
 
         Vector<Coordinate> possibleMoveCoordinates=new Vector<Coordinate>();
 
@@ -196,7 +231,14 @@ public class FoxcatcherState implements Cloneable{
 
     }
 
-    public void movePawn(Coordinate moveFromCoordinate,Coordinate moveToCoordinate){
+    /**
+     * Moves the pawn from a specific coordinate to another coordinate on the chessboard.
+     *
+     * @param moveFromCoordinate A coordinate to move from.
+     * @param moveToCoordinate A coordinate to move to.
+     * @throws IllegalArgumentException If the move is not possible.
+     */
+    public void movePawn(Coordinate moveFromCoordinate, Coordinate moveToCoordinate){
 
         if(!canMovePawn(moveFromCoordinate,moveToCoordinate)) throw new IllegalArgumentException();
 
@@ -220,11 +262,43 @@ public class FoxcatcherState implements Cloneable{
         chessBoard[moveToCoordinate.getX()][moveToCoordinate.getY()] = getPawn(moveFromCoordinate);
         chessBoard[moveFromCoordinate.getX()][moveFromCoordinate.getY()]=Pawn.EMPTY;
 
+        advanceActivePlayer();
 
+    }
+    /**
+     * Checks whether the game is over.
+     *
+     * @return {@code true} if the game is over, {@code false} otherwise
+     */
+    public boolean isGameOwer(){
+
+        if(calculatePossibleMoveCoordinates(foxPosition).isEmpty())return true;
+
+        return getDogPositions().stream().allMatch(coordinate -> coordinate.getX()<foxPosition.getX());
+    }
+
+    /**
+     * Returns the number of the winner player.
+     *
+     * @return {@code 1} if the winner is {@code activePlayer1},
+     *         {@code 2} if the winner is {@code activePlayer2},
+     *         {@code 0} otherwise.
+     */
+    public int whoIsTheWinner(){
+
+        if(calculatePossibleMoveCoordinates(foxPosition).isEmpty()) return 1;
+
+        if(getDogPositions().stream().allMatch(coordinate -> coordinate.getX()<foxPosition.getX())) return 2;
+
+        return 0;
 
     }
 
-
+    /**
+     * Checks whether the coordinate is valid coordinate of the chessboard.
+     *
+     * @return {@code true} if the coordinate is valid, {@code false} otherwise
+     */
     public static boolean isValidCoordinate(Coordinate coordinate){
         int x = coordinate.getX();
         int y = coordinate.getY();

@@ -33,23 +33,35 @@ public class PlayerStatsDao extends GenericJpaDao<PlayerStats> {
 
 
     @Transactional
-    public void updatePlayerStats(String player,int win,int lost) {
+    public void updatePlayerStats(String player,boolean winner) {
 
         try {
             PlayerStats playerStats =  entityManager.createQuery("SELECT r FROM PlayerStats r WHERE r.player = :player", PlayerStats.class)
                     .setParameter("player", player)
                     .getSingleResult();
 
-            playerStats.setWins(playerStats.getWins()+win);
-            playerStats.setLosses(playerStats.getLosses()+lost);
+            if(winner){
+            playerStats.setWins(playerStats.getWins()+1);
+            }
+            else {
+                playerStats.setLosses(playerStats.getLosses() + 1);
+            }
 
         } catch (NoResultException e) {
 
-            entityManager.persist(PlayerStats.builder()
-                    .player(player)
-                    .wins(win)
-                    .losses(lost)
-                    .build());
+            if(winner) {
+                entityManager.persist(PlayerStats.builder()
+                        .player(player)
+                        .wins(1)
+                        .losses(0)
+                        .build());
+            }else{
+                entityManager.persist(PlayerStats.builder()
+                        .player(player)
+                        .wins(0)
+                        .losses(1)
+                        .build());
+            }
         }
 
 

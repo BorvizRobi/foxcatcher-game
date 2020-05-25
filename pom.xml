@@ -3,20 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>hu.unideb.inf</groupId>
     <artifactId>foxcatcher-game</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
-        <exec.mainClass>foxcatcher.javafx.Main</exec.mainClass>
-    </properties>
-    <name>Foxcatcher Game</name>
+    <version>1.0</version>
     <description>The foxcatcher game implemented in Java.</description>
+    <scm>
+        <connection>scm:https://github.com/BorvizRobi/foxcatcher-game.git</connection>
+        <developerConnection>scm:https://github.com/BorvizRobi/foxcatcher-game.git</developerConnection>
+    </scm>
     <developers>
         <developer>
             <name>Borvíz Róbert András</name>
@@ -25,6 +19,14 @@
             <organizationUrl>https://inf.unideb.hu/</organizationUrl>
         </developer>
     </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
+        <exec.mainClass>foxcatcher.javafx.Main</exec.mainClass>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -52,13 +54,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <artifactId>log4j-core</artifactId>
             <version>2.13.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
+            <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.13.2</version>
             <scope>runtime</scope>
         </dependency>
@@ -66,12 +68,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.6.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.6.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -164,7 +160,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>foxcatcher.javafx.Main</mainClass>
+                                    <mainClass>${exec.mainClass}</mainClass>
                                 </transformer>
                             </transformers>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -192,6 +188,7 @@
         <filters>
             <filter>db.properties</filter>
         </filters>
+
     </build>
     <reporting>
         <plugins>
