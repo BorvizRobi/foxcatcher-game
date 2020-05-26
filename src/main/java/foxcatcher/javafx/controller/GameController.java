@@ -97,8 +97,8 @@ public class GameController {
                     playerStatsDao.updatePlayerStats(playerNames.get(2), false);
                 }
                 else if(newValue.equals(2)) {
-                    playerStatsDao.updatePlayerStats(playerNames.get(1), true);
-                    playerStatsDao.updatePlayerStats(playerNames.get(2), false);
+                    playerStatsDao.updatePlayerStats(playerNames.get(1), false);
+                    playerStatsDao.updatePlayerStats(playerNames.get(2), true);
                 }
 
         });

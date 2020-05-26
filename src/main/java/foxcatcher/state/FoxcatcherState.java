@@ -312,7 +312,7 @@ public class FoxcatcherState implements Cloneable{
 
     /**
      * Checks whether the coordinate is valid coordinate of the chessboard.
-     *
+     * @param coordinate the coordinate to be tested.
      * @return {@code true} if the coordinate is valid, {@code false} otherwise
      */
     public static boolean isValidCoordinate(Coordinate coordinate){
