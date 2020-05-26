@@ -31,7 +31,7 @@ public class FoxcatcherState implements Cloneable{
      * The array storing the current configuration of the chessboard.
      */
     @Setter(AccessLevel.NONE)
-    private  Pawn[][] chessBoard;
+    private  Pawn[][] chessboard;
 
     /**
      * The Coordinate of the fox.
@@ -85,7 +85,7 @@ public class FoxcatcherState implements Cloneable{
         if(!isValidCoordinate(coordinate)){
             throw new IllegalArgumentException();
         }
-        return chessBoard[coordinate.getX()][coordinate.getY()];
+        return chessboard[coordinate.getX()][coordinate.getY()];
 
     }
 
@@ -111,11 +111,11 @@ public class FoxcatcherState implements Cloneable{
      */
     public FoxcatcherState(int [][] a,int activePlayer) {
 
-        if (!isValidChessBoard(a) || !isValidActivePlayer(activePlayer)) {
+        if (!isValidChessboard(a) || !isValidActivePlayer(activePlayer)) {
             throw new IllegalArgumentException();
         }
 
-        initChessBoard(a);
+        initChessboard(a);
         this.activePlayer=activePlayer;
     }
 
@@ -133,7 +133,7 @@ public class FoxcatcherState implements Cloneable{
      *
      * @return {@code true} if the chessboard is valid, {@code false} otherwise
      */
-    private boolean isValidChessBoard(int [][] a){
+    private boolean isValidChessboard(int [][] a){
 
         if (a == null || a.length != 8) {
             return false;
@@ -190,15 +190,15 @@ public class FoxcatcherState implements Cloneable{
 
     }
 
-    private void initChessBoard(int [][] a){
+    private void initChessboard(int [][] a){
 
         dogPositions= new Vector<Coordinate>();
-        chessBoard= new Pawn[8][8];
+        chessboard= new Pawn[8][8];
 
         for(int i = 0 ; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
 
-                chessBoard[i][j]= Pawn.of(a[i][j]);
+                chessboard[i][j]= Pawn.of(a[i][j]);
                 if (Pawn.of(a[i][j]) == Pawn.FOX) foxPosition = new Coordinate(i,j);
                 if (Pawn.of(a[i][j]) == Pawn.DOG) dogPositions.add(new Coordinate(i,j));
             }
@@ -275,8 +275,8 @@ public class FoxcatcherState implements Cloneable{
         }
 
         log.info("Pawn at ({},{}) is moved to ({},{})",moveFromCoordinate.getX(),moveFromCoordinate.getY(),moveToCoordinate.getX(),moveToCoordinate.getY());
-        chessBoard[moveToCoordinate.getX()][moveToCoordinate.getY()] = getPawn(moveFromCoordinate);
-        chessBoard[moveFromCoordinate.getX()][moveFromCoordinate.getY()]=Pawn.EMPTY;
+        chessboard[moveToCoordinate.getX()][moveToCoordinate.getY()] = getPawn(moveFromCoordinate);
+        chessboard[moveFromCoordinate.getX()][moveFromCoordinate.getY()]=Pawn.EMPTY;
 
         advanceActivePlayer();
 
@@ -330,9 +330,9 @@ public class FoxcatcherState implements Cloneable{
             copy = (FoxcatcherState) super.clone();
         } catch (CloneNotSupportedException e) {
         }
-        copy.chessBoard = new Pawn[chessBoard.length][];
-        for (int i = 0; i < chessBoard.length; ++i) {
-            copy.chessBoard[i] = chessBoard[i].clone();
+        copy.chessboard = new Pawn[chessboard.length][];
+        for (int i = 0; i < chessboard.length; ++i) {
+            copy.chessboard[i] = chessboard[i].clone();
         }
 
         return copy;
@@ -341,7 +341,7 @@ public class FoxcatcherState implements Cloneable{
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Pawn[] row : chessBoard) {
+        for (Pawn[] row : chessboard) {
             for (Pawn pawn : row) {
                 sb.append(pawn).append(' ');
             }

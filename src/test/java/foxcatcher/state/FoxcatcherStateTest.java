@@ -93,7 +93,7 @@ class FoxcatcherStateTest {
                 {Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY},
                 {Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY, Pawn.EMPTY},
                 {Pawn.EMPTY, Pawn.DOG, Pawn.EMPTY, Pawn.DOG, Pawn.EMPTY, Pawn.DOG, Pawn.EMPTY, Pawn.DOG}
-        }, state.getChessBoard());
+        }, state.getChessboard());
 
         assertFoxPosition(new Coordinate(0, 2), state);
 
