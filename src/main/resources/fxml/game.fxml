@@ -131,7 +131,7 @@
             <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
                   <Label id="vslabel" fx:id="messageLabel" text="Label" />
-                  <Label fx:id="turnLabel" text="Label" />
+                  <Label fx:id="activePlayerLabel" text="Label" />
                </children>
                <padding>
                   <Insets bottom="10.0" />

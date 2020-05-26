@@ -56,7 +56,7 @@ public class GameController {
     private Label messageLabel;
 
     @FXML
-    private Label turnLabel;
+    private Label activePlayerLabel;
 
     @FXML
     private GridPane gameGrid;
@@ -116,7 +116,7 @@ public class GameController {
         displayPawns();
         createStopWatch();
         Platform.runLater(() -> messageLabel.setText(playerNames.get(1) + " Vs. "+ playerNames.get(2)));
-        Platform.runLater(() -> turnLabel.setText(playerNames.get(1) + "'s turn:"));
+        Platform.runLater(() -> activePlayerLabel.setText(playerNames.get(1) + "'s turn:"));
 
     }
 
@@ -228,7 +228,7 @@ public class GameController {
 
                     steps.set(steps.get() + 1);
 
-                    setTurnLabel(gameState.getActivePlayer());
+                    setActivePlayerLabel(gameState.getActivePlayer());
 
                     if (gameState.isGameOwer()) {
                         handleGameOver();
@@ -253,7 +253,7 @@ public class GameController {
         gameOver.setValue(gameState.whoIsTheWinner());
         log.info("Player {} has won the game in {} steps", playerNames.get(gameState.whoIsTheWinner()), steps.get());
         messageLabel.setText("Congratulations, " + playerNames.get(gameState.whoIsTheWinner()) );
-        turnLabel.setText("you are the winner!");
+        activePlayerLabel.setText("you are the winner!");
         giveUpButton.setText("Finish");
 
     }
@@ -297,12 +297,12 @@ public class GameController {
         this.playerNames=playerNames;
     }
 
-    private void setTurnLabel(int turnPlayer){
+    private void setActivePlayerLabel(int activePlayer){
 
-        if (turnPlayer==1) {
-            turnLabel.setText(playerNames.get(1) + "'s turn:");
-        }  else  if (turnPlayer==2) {
-            turnLabel.setText(playerNames.get(2) + "'s turn:");
+        if (activePlayer==1) {
+            activePlayerLabel.setText(playerNames.get(1) + "'s turn:");
+        }  else  if (activePlayer==2) {
+            activePlayerLabel.setText(playerNames.get(2) + "'s turn:");
         }
     }
 
