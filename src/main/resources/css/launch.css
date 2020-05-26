@@ -9,14 +9,14 @@
     -fx-font-weight: bold;
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
 }
-#foxcatcher {
+#foxcatcherText {
     -fx-font-size: 50px;
     -fx-font-family: "Arial Black";
     -fx-fill: #818181;
     -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
 }
 
-#error {
+#errorText {
     -fx-fill: FIREBRICK;
     -fx-font-weight: bold;
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );

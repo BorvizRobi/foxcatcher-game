@@ -45,7 +45,11 @@ public enum Pawn {
         return ordinal();
     }
 
-
+    /**
+     * Returns the string value that represents this instance.
+     *
+     * @return the string value that represents this instance
+     */
     public String toString() {
         return Integer.toString(ordinal());
     }

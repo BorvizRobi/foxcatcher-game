@@ -45,7 +45,7 @@ public class LaunchController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-            log.info("The player1 name is set to {}, player2 name is set to {} loading game scene", player1NameTextField.getText(),player2NameTextField.getText());
+            log.info("The Player1 name is set to {}, Player2 name is set to {} loading game scene", player1NameTextField.getText(),player2NameTextField.getText());
         }
     }
 

@@ -5,7 +5,6 @@ import util.jpa.GenericJpaDao;
 
 import javax.persistence.NoResultException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * DAO class for the {@link PlayerStats} entity.
@@ -31,7 +30,13 @@ public class PlayerStatsDao extends GenericJpaDao<PlayerStats> {
                 .getResultList();
     }
 
+    /**
+     * Updates the given player's statistics in the database.
+     *
+     * @param player The player name.
+     * @param winner For setting the winner of the game.
 
+     */
     @Transactional
     public void updatePlayerStats(String player,boolean winner) {
 

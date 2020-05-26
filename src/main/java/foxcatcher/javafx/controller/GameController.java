@@ -69,14 +69,10 @@ public class GameController {
 
     private Timeline stopWatchTimeline;
 
-
-
     @FXML
     private Button giveUpButton;
 
     private IntegerProperty gameOver = new SimpleIntegerProperty();
-
-
 
 
     @FXML
@@ -87,7 +83,6 @@ public class GameController {
                 new Image(getClass().getResource("/images/Dog.png").toExternalForm()),
                 new Image(getClass().getResource("/images/Fox.png").toExternalForm())
         );
-
 
        stepsLabel.textProperty().bind(steps.asString());
         gameOver.addListener((observable, oldValue, newValue) -> {
@@ -183,6 +178,10 @@ public class GameController {
                 imageView.setFitHeight(42);
                 button.setGraphic(imageView);
 
+                if (button.getGraphic() != null) {
+                    log.trace("Image({}, {}) = {}", possiblemoveCoordinates.get(i).getX(), possiblemoveCoordinates.get(i).getY(), imageView.getImage().getUrl());
+                }
+
             }
         }
     }
@@ -276,7 +275,7 @@ public class GameController {
         }
     }
 
-    public void loadHighScores(ActionEvent actionEvent)throws IOException{
+    private void loadHighScores(ActionEvent actionEvent)throws IOException{
         log.info("Loading high scores scene...");
         fxmlLoader.setLocation(getClass().getResource("/fxml/highscores.fxml"));
         Parent root = fxmlLoader.load();

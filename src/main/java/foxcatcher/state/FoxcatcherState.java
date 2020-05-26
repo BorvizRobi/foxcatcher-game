@@ -145,28 +145,44 @@ public class FoxcatcherState implements Cloneable{
         int EmptyTiles = 0;
         int Dogs = 0;
 
-        for (int[] row : a) {
-            if (row == null || row.length != 8) {
+        for(int i=0;i<a.length;i++){
+
+            if (a[i] == null || a[i].length != 8) {
                 return false;
             }
-            for (int space : row) {
-                if (space < 0 || space >= Pawn.values().length) {
+
+            for(int j=0;j<a[i].length;j++){
+
+                if(i%2==1 && j%2==0 && a[i][j]!=0) {
                     return false;
                 }
-                if (space == Pawn.EMPTY.getValue()) {
+
+                if(i%2==0 && j%2==1 && a[i][j]!=0) {
+                    return false;
+                }
+
+                if(a[i][j]<0 || a[i][j]>= Pawn.values().length){
+                    return false;
+                }
+
+                if (a[i][j] == Pawn.EMPTY.getValue()) {
 
                     EmptyTiles++;
                 }
-                if (space == Pawn.DOG.getValue()) {
+
+                if (a[i][j] == Pawn.DOG.getValue()) {
 
                     Dogs++;
                 }
-                if (space == Pawn.FOX.getValue()) {
+
+                if (a[i][j] == Pawn.FOX.getValue()) {
 
                     foundFox = true;
                 }
+
             }
         }
+
         if (EmptyTiles==59) foundEmptyTiles = true;
         if (Dogs==4) foundDogs = true;
 
@@ -174,7 +190,7 @@ public class FoxcatcherState implements Cloneable{
 
     }
 
-    public void initChessBoard(int [][] a){
+    private void initChessBoard(int [][] a){
 
         dogPositions= new Vector<Coordinate>();
         chessBoard= new Pawn[8][8];

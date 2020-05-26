@@ -17,7 +17,7 @@
             <TableColumn fx:id="created" prefWidth="279.0" text="Last Game" />
         </columns>
       </TableView>
-      <Label id="highScores" layoutX="199.0" layoutY="14.0" text="High Scores">
+      <Label id="highScoresText" layoutX="199.0" layoutY="14.0" text="High Scores">
          <font>
             <Font size="22.0" />
          </font>

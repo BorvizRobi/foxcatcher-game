@@ -33,11 +33,13 @@ public class PlayerStats {
     /**
      * The number of total wins.
      */
+    @Column(nullable = false)
     private int wins;
 
     /**
      * The number of total losses.
      */
+    @Column(nullable = false)
     private int losses;
 
     /**

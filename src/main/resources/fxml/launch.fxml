@@ -6,7 +6,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/launch.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="foxcatcher.javafx.controller.LaunchController">
    <children>
-      <Label id="foxcatcher" layoutX="57.0" layoutY="92.0" text="Foxcatcher Game" textFill="#818181">
+      <Label id="foxcatcherText" layoutX="57.0" layoutY="92.0" text="Foxcatcher Game" textFill="#818181">
          <font>
             <Font size="50.0" />
          </font>
@@ -14,7 +14,7 @@
       <Label layoutX="134.0" layoutY="215.0" text="Player 1:" textFill="#333333" />
       <TextField fx:id="player1NameTextField" layoutX="223.0" layoutY="211.0" prefHeight="26.0" prefWidth="158.0" />
       <Button fx:id="startButton" layoutX="250.0" layoutY="300.0" mnemonicParsing="false" onAction="#startAction" prefHeight="51.0" prefWidth="105.0" text="Start game" />
-      <Label id="error" fx:id="errorLabel" layoutX="224.0" layoutY="181.0" prefHeight="19.0" prefWidth="158.0" textFill="RED" />
+      <Label id="errorText" fx:id="errorLabel" layoutX="224.0" layoutY="181.0" prefHeight="19.0" prefWidth="158.0" textFill="RED" />
       <Label layoutX="134.0" layoutY="257.0" text="Player 2:" textFill="#333333" />
       <TextField fx:id="player2NameTextField" layoutX="223.0" layoutY="253.0" prefHeight="26.0" prefWidth="158.0" />
       <Label layoutX="395.0" layoutY="215.0" text="(Dogs)" textFill="#333333" />
