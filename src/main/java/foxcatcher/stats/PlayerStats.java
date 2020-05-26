@@ -28,8 +28,6 @@ public class PlayerStats {
     @Column(nullable = false)
     private String player;
 
-
-
     /**
      * The number of total wins.
      */

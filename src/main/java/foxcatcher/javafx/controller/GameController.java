@@ -196,6 +196,7 @@ public class GameController {
         }
     }
 
+
     public void handleClickOnTile(MouseEvent mouseEvent) {
 
         int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
@@ -203,7 +204,7 @@ public class GameController {
         log.debug("Cube ({}, {}) is pressed", row, col);
 
 
-            if (selectedPawnCoordinate == null) {
+            if (selectedPawnCoordinate == null ) {
                 selectedPawnCoordinate = new Coordinate(row, col);
                 possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
@@ -235,7 +236,7 @@ public class GameController {
                     }
 
 
-                } else if(!gameState.isGameOwer()){
+                } else if(!gameState.isGameOwer() ){
                     selectedPawnCoordinate = new Coordinate(row, col);
                     undisplayPossibleMoves();
                     possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);

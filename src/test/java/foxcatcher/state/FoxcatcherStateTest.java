@@ -14,9 +14,9 @@ class FoxcatcherStateTest {
         );
     }
 
-    private void assertDogPositions(Vector<Coordinate> expectedCoordinate, FoxcatcherState actual) {
+    private void assertDogPositions(Vector<Coordinate> expectedCoordinates, FoxcatcherState actual) {
         assertAll(
-                () -> assertTrue(expectedCoordinate.containsAll(actual.getDogPositions()))
+                () -> assertTrue(expectedCoordinates.containsAll(actual.getDogPositions()))
         );
     }
 
@@ -120,7 +120,7 @@ class FoxcatcherStateTest {
     @Test
     void testMovePawn() {
 
-        FoxcatcherState probaState = new FoxcatcherState(new int[][]{
+        FoxcatcherState state = new FoxcatcherState(new int[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 2, 0, 0, 0, 0, 0},
@@ -131,25 +131,25 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         },2);
-        probaState.movePawn(new Coordinate(2,2),new Coordinate(1,1));
-        assertFoxPosition(new Coordinate(1, 1), probaState);
-        assertEquals(probaState.getActivePlayer(),1);
+        state.movePawn(new Coordinate(2,2),new Coordinate(1,1));
+        assertFoxPosition(new Coordinate(1, 1), state);
+        assertEquals(state.getActivePlayer(),1);
 
-        probaState.movePawn(new Coordinate(6,2),new Coordinate(5,3));
-        assertEquals(probaState.getActivePlayer(),2);
+        state.movePawn(new Coordinate(6,2),new Coordinate(5,3));
+        assertEquals(state.getActivePlayer(),2);
 
         Vector<Coordinate> expectedDogPositions = new Vector<Coordinate>();
         expectedDogPositions.add(new Coordinate(5,3));
         expectedDogPositions.add(new Coordinate(5,1));
         expectedDogPositions.add(new Coordinate(3,3));
         expectedDogPositions.add(new Coordinate(4,4));
-        assertDogPositions(expectedDogPositions,probaState);
+        assertDogPositions(expectedDogPositions,state);
 
-        probaState.movePawn(new Coordinate(1,1),new Coordinate(0,2));
-        assertFoxPosition(new Coordinate(0, 2), probaState);
-        assertEquals(probaState.getActivePlayer(),1);
+        state.movePawn(new Coordinate(1,1),new Coordinate(0,2));
+        assertFoxPosition(new Coordinate(0, 2), state);
+        assertEquals(state.getActivePlayer(),1);
 
-        FoxcatcherState probaState2 = new FoxcatcherState(new int[][]{
+        FoxcatcherState state2 = new FoxcatcherState(new int[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 2, 0, 0, 0, 0, 0},
@@ -160,29 +160,29 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         },2);
-        probaState2.movePawn(new Coordinate(2,2),new Coordinate(3,1));
-        assertFoxPosition(new Coordinate(3, 1), probaState2);
-        assertEquals(probaState2.getActivePlayer(),1);
+        state2.movePawn(new Coordinate(2,2),new Coordinate(3,1));
+        assertFoxPosition(new Coordinate(3, 1), state2);
+        assertEquals(state2.getActivePlayer(),1);
 
-        probaState2.movePawn(new Coordinate(6,2),new Coordinate(5,1));
-        assertEquals(probaState2.getActivePlayer(),2);
+        state2.movePawn(new Coordinate(6,2),new Coordinate(5,1));
+        assertEquals(state2.getActivePlayer(),2);
 
         Vector<Coordinate> expectedDogPositions2 = new Vector<Coordinate>();
         expectedDogPositions2.add(new Coordinate(6,0));
         expectedDogPositions2.add(new Coordinate(5,1));
         expectedDogPositions2.add(new Coordinate(6,4));
         expectedDogPositions2.add(new Coordinate(6,6));
-        assertDogPositions(expectedDogPositions2,probaState2);
+        assertDogPositions(expectedDogPositions2,state2);
 
-        probaState2.movePawn(new Coordinate(3,1),new Coordinate(4,0));
-        assertFoxPosition(new Coordinate(4, 0), probaState2);
-        assertEquals(probaState2.getActivePlayer(),1);
+        state2.movePawn(new Coordinate(3,1),new Coordinate(4,0));
+        assertFoxPosition(new Coordinate(4, 0), state2);
+        assertEquals(state2.getActivePlayer(),1);
 
     }
 
     @Test
     void testCalculatePossibleMoveCoordinates() {
-        FoxcatcherState probaState = new FoxcatcherState(new int[][]{
+        FoxcatcherState state = new FoxcatcherState(new int[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
                 {0, 0, 2, 0, 0, 0, 0, 0},
@@ -193,23 +193,23 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         },1);
-        assertFoxPosition(new Coordinate(2, 2), probaState);
+        assertFoxPosition(new Coordinate(2, 2), state);
 
         Vector<Coordinate> expectedDogPositions = new Vector<Coordinate>();
         expectedDogPositions.add(new Coordinate(1,1));
         expectedDogPositions.add(new Coordinate(3,3));
         expectedDogPositions.add(new Coordinate(3,1));
         expectedDogPositions.add(new Coordinate(1,3));
-        assertDogPositions(expectedDogPositions,probaState);
+        assertDogPositions(expectedDogPositions,state);
 
-        assertTrue(probaState.calculatePossibleMoveCoordinates(new Coordinate(2, 2)).isEmpty());
-        assertFalse(probaState.calculatePossibleMoveCoordinates(new Coordinate(1, 1)).isEmpty());
-        assertFalse(probaState.calculatePossibleMoveCoordinates(new Coordinate(3, 3)).isEmpty());
-        assertEquals(probaState.calculatePossibleMoveCoordinates(new Coordinate(1, 1)), new Vector<Coordinate>(Arrays.asList(new Coordinate(0, 0), new Coordinate(0, 2))));
-        assertEquals(probaState.calculatePossibleMoveCoordinates(new Coordinate(1, 3)), new Vector<Coordinate>(Arrays.asList(new Coordinate(0, 2), new Coordinate(0, 4))));
-        assertEquals(probaState.calculatePossibleMoveCoordinates(new Coordinate(3, 3)), new Vector<Coordinate>(Collections.singletonList(new Coordinate(2, 4))));
+        assertTrue(state.calculatePossibleMoveCoordinates(new Coordinate(2, 2)).isEmpty());
+        assertFalse(state.calculatePossibleMoveCoordinates(new Coordinate(1, 1)).isEmpty());
+        assertFalse(state.calculatePossibleMoveCoordinates(new Coordinate(3, 3)).isEmpty());
+        assertEquals(state.calculatePossibleMoveCoordinates(new Coordinate(1, 1)), new Vector<Coordinate>(Arrays.asList(new Coordinate(0, 0), new Coordinate(0, 2))));
+        assertEquals(state.calculatePossibleMoveCoordinates(new Coordinate(1, 3)), new Vector<Coordinate>(Arrays.asList(new Coordinate(0, 2), new Coordinate(0, 4))));
+        assertEquals(state.calculatePossibleMoveCoordinates(new Coordinate(3, 3)), new Vector<Coordinate>(Collections.singletonList(new Coordinate(2, 4))));
 
-        FoxcatcherState probaState2 = new FoxcatcherState(new int[][]{
+        FoxcatcherState state2 = new FoxcatcherState(new int[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -220,22 +220,22 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
         },1);
-        assertFoxPosition(new Coordinate(4, 4), probaState2);
-        assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3, 5)).isEmpty());
-        assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3, 7)).isEmpty());
-        assertFalse(probaState2.calculatePossibleMoveCoordinates(new Coordinate(6, 4)).isEmpty());
-        assertTrue(probaState2.calculatePossibleMoveCoordinates(new Coordinate(4, 6)).isEmpty());
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3, 5)), new Vector<Coordinate>(Arrays.asList(new Coordinate(2, 4), new Coordinate(2, 6))));
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(6, 4)), new Vector<Coordinate>(Arrays.asList(new Coordinate(5, 3), new Coordinate(5, 5))));
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(4, 4)), new Vector<Coordinate>(Arrays.asList(new Coordinate(3, 3), new Coordinate(5, 3),new Coordinate(5, 5))));
-        assertEquals(probaState2.calculatePossibleMoveCoordinates(new Coordinate(3, 7)), new Vector<Coordinate>(Collections.singletonList(new Coordinate(2, 6))));
+        assertFoxPosition(new Coordinate(4, 4), state2);
+        assertFalse(state2.calculatePossibleMoveCoordinates(new Coordinate(3, 5)).isEmpty());
+        assertFalse(state2.calculatePossibleMoveCoordinates(new Coordinate(3, 7)).isEmpty());
+        assertFalse(state2.calculatePossibleMoveCoordinates(new Coordinate(6, 4)).isEmpty());
+        assertTrue(state2.calculatePossibleMoveCoordinates(new Coordinate(4, 6)).isEmpty());
+        assertEquals(state2.calculatePossibleMoveCoordinates(new Coordinate(3, 5)), new Vector<Coordinate>(Arrays.asList(new Coordinate(2, 4), new Coordinate(2, 6))));
+        assertEquals(state2.calculatePossibleMoveCoordinates(new Coordinate(6, 4)), new Vector<Coordinate>(Arrays.asList(new Coordinate(5, 3), new Coordinate(5, 5))));
+        assertEquals(state2.calculatePossibleMoveCoordinates(new Coordinate(4, 4)), new Vector<Coordinate>(Arrays.asList(new Coordinate(3, 3), new Coordinate(5, 3),new Coordinate(5, 5))));
+        assertEquals(state2.calculatePossibleMoveCoordinates(new Coordinate(3, 7)), new Vector<Coordinate>(Collections.singletonList(new Coordinate(2, 6))));
 
         Vector<Coordinate> expectedDogPositions2 = new Vector<Coordinate>();
         expectedDogPositions.add(new Coordinate(3,5));
         expectedDogPositions.add(new Coordinate(4,6));
         expectedDogPositions.add(new Coordinate(3,7));
         expectedDogPositions.add(new Coordinate(6,4));
-        assertDogPositions(expectedDogPositions,probaState2);
+        assertDogPositions(expectedDogPositions,state2);
 
     }
 
