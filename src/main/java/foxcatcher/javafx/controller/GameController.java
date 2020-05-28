@@ -208,7 +208,7 @@ public class GameController {
                 selectedPawnCoordinate = new Coordinate(row, col);
                 possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);
 
-                if (!gameState.isGameOwer() && gameState.getPawn(selectedPawnCoordinate).getValue()==gameState.getActivePlayer()) {
+                if (!gameState.isGameOver() && gameState.getPawn(selectedPawnCoordinate).getValue()==gameState.getActivePlayer()) {
                     displayPossibleMoves();
                 }
 
@@ -216,7 +216,7 @@ public class GameController {
 
                 Coordinate coordinate = new Coordinate(row, col);
 
-                if (!gameState.isGameOwer() &&  gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
+                if (!gameState.isGameOver() &&  gameState.canMovePawn(selectedPawnCoordinate, coordinate)) {
 
                     unDisplayPawns();
                     undisplayPossibleMoves();
@@ -231,12 +231,12 @@ public class GameController {
 
                     setActivePlayerLabel(gameState.getActivePlayer());
 
-                    if (gameState.isGameOwer()) {
+                    if (gameState.isGameOver()) {
                         handleGameOver();
                     }
 
 
-                } else if(!gameState.isGameOwer() ){
+                } else if(!gameState.isGameOver() ){
                     selectedPawnCoordinate = new Coordinate(row, col);
                     undisplayPossibleMoves();
                     possiblemoveCoordinates = gameState.calculatePossibleMoveCoordinates(selectedPawnCoordinate);

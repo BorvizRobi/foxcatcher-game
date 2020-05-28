@@ -286,7 +286,7 @@ public class FoxcatcherState implements Cloneable{
      *
      * @return {@code true} if the game is over, {@code false} otherwise
      */
-    public boolean isGameOwer(){
+    public boolean isGameOver(){
 
         if(calculatePossibleMoveCoordinates(foxPosition).isEmpty())return true;
 

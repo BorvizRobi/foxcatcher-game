@@ -241,7 +241,7 @@ class FoxcatcherStateTest {
 
     @Test
     void testIsGameOwer() {
-        assertFalse(new FoxcatcherState().isGameOwer());
+        assertFalse(new FoxcatcherState().isGameOver());
         assertTrue(new FoxcatcherState(new int[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -252,7 +252,7 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
-        },1).isGameOwer());
+        },1).isGameOver());
         assertTrue(new FoxcatcherState(new int[][]{
                 {0, 0, 2, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -263,7 +263,7 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 1, 0, 1},
 
-        },1).isGameOwer());
+        },1).isGameOver());
 
         assertTrue(new FoxcatcherState(new int[][]{
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -275,7 +275,7 @@ class FoxcatcherStateTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
 
-        },1).isGameOwer());
+        },1).isGameOver());
     }
 
     @Test
